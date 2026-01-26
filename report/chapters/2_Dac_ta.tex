@@ -1,0 +1,469 @@
+% !TEX root = ../main.tex
+\chapter{ĐẶC TẢ YÊU CẦU}
+
+\section{Biểu đồ ca sử dụng}
+
+\subsection{Các tác nhân của hệ thống}
+
+Hệ thống Cửa hàng tiện lợi (CVS) bao gồm các tác nhân sau đây:
+
+\begin{longtable}{|c|p{3cm}|p{10cm}|}
+	\hline
+	\textbf{Mã} & \textbf{Tên tác nhân} & \textbf{Mô tả}                                                                                                                                                          \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\textbf{Mã} & \textbf{Tên tác nhân} & \textbf{Mô tả}                                                                                                                                                          \\
+	\hline
+	\endhead
+
+	\hline
+	\endfoot
+
+	\hline
+	\caption{Danh sách các tác nhân trong hệ thống} \label{tab:actors}                                                                                                                                            \\
+	\endlastfoot
+
+	AC01        & Nhân viên             & Thực hiện các nghiệp vụ bán hàng, nhập hàng, kiểm kê, quản lý ca làm việc, ...                                                                                          \\
+	\hline
+	AC02        & Quản lý               & Là nhân viên có quyền hạn cao hơn, có thể thực hiện các chức năng quản trị như quản lý nhân viên, cấu hình hệ thống, xem báo cáo thống kê và quản lý danh mục sản phẩm. \\
+	\hline
+	AC03        & Khách hàng            & Người mua hàng tại cửa hàng, tương tác với hệ thống thông qua quá trình thanh toán và nhận hóa đơn.                                                                     \\                                                                            \\
+	\hline
+	AC04        & Máy in nhiệt          & Thiết bị phần cứng dùng để in hóa đơn bán hàng và phiếu chế biến thực phẩm.                                                                                             \\
+	\hline
+	AC05        & Nhà cung cấp          & Đối tác bên ngoài cung cấp hàng hóa cho cửa hàng, tham gia vào quy trình nhập hàng.                                                                                     \\
+	\hline
+\end{longtable}
+
+\subsection{Các ca sử dụng}
+
+Dựa trên phân tích yêu cầu, hệ thống CVS có các ca sử dụng như sau:
+
+\begin{longtable}{|c|p{3cm}|p{6cm}|p{3.5cm}|}
+	\hline
+	\textbf{Mã} & \textbf{Tên ca sử dụng} & \textbf{Mô tả ngắn}                                                                               & \textbf{Tác nhân}                   \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\textbf{Mã} & \textbf{Tên ca sử dụng} & \textbf{Mô tả ngắn}                                                                               & \textbf{Tác nhân}                   \\
+	\hline
+	\endhead
+
+	\hline
+	\endfoot
+
+	\hline
+	\caption{Danh sách các ca sử dụng trong hệ thống} \label{tab:usecases}                                                                                                          \\
+	\endlastfoot
+
+	UC01        & Đăng nhập               & Xác thực người dùng để truy cập hệ thống bằng mã PIN.                                             & Nhân viên                           \\
+	\hline
+	UC02        & Đăng xuất               & Kết thúc phiên làm việc và thoát khỏi hệ thống.                                                   & Nhân viên                           \\
+	\hline
+	UC03        & Đặt lại PIN             & Thay đổi mã PIN đăng nhập của mình.                                                               & Nhân viên                           \\
+	\hline
+	UC04        & Bán hàng                & Thực hiện quy trình bán hàng: chọn sản phẩm, tính tiền, thanh toán và xuất hóa đơn.               & Nhân viên, Khách hàng, Máy in nhiệt \\
+	\hline
+	UC05        & Chế biến thực phẩm      & Chế biến tại chỗ (đồ ăn nóng, thức uống) phát sinh từ đơn hàng hoặc duy trì                       & Nhân viên, Khách hàng               \\
+	\hline
+	UC06        & Làm lại đơn hàng        & Sửa đơn hàng sau thanh toán khi có sự cố (hàng hỏng, sai món, ...).                               & Nhân viên                           \\
+	\hline
+	UC07        & Tiêu huỷ                & Huỷ bỏ sản phẩm bị lỗi, hết hạn hoặc hư hỏng.                                                     & Nhân viên                           \\
+	\hline
+	UC08        & Nhập hàng               & Nhập hàng hóa mới vào kho, cập nhật số lượng tồn kho.                                             & Nhân viên, Nhà cung cấp             \\
+	\hline
+	UC09        & Kiểm kê tồn kho         & Kiểm tra và đối chiếu số lượng hàng thực tế với dữ liệu trong hệ thống.                           & Nhân viên                           \\
+	\hline
+	UC10        & Quản lý ca làm việc     & Thực hiện quy trình Mở/đóng ca gồm ghi nhận doanh thu và kiểm đếm tiền quỹ.                       & Nhân viên                           \\
+	\hline
+	UC11        & Quản lý công thức       & Tạo, sửa, xóa công thức chế biến cho các sản phẩm.                                                & Quản lý                             \\
+	\hline
+	UC12        & Quản lý combo           & Thiết lập các gói combo sản phẩm.                                                                 & Quản lý                             \\
+	\hline
+	UC13        & Quản lý danh mục hàng   & Quản lý danh mục sản phẩm (trong kho, sản phẩm bán), thông tin hàng hóa, giá bán.                 & Quản lý                             \\
+	\hline
+	UC14        & Quản lý khuyến mại      & Tạo và quản lý các chương trình khuyến mại, giảm giá.                                             & Quản lý                             \\
+	\hline
+	UC15        & Quản lý nhân viên       & Thêm, sửa, xóa thông tin nhân viên và phân quyền truy cập.                                        & Quản lý                             \\
+	\hline
+	UC16        & Cấu hình hệ thống       & Thiết lập các thông số hệ thống: thông tin cửa hàng, máy in, thuế suất, tài khoản thanh toán, ... & Quản lý                             \\
+	\hline
+	UC17        & Báo cáo thống kê        & Xem báo cáo doanh thu, lợi nhuận, hàng bán chạy và các thống kê khác.                             & Quản lý                             \\
+	\hline
+	UC18        & Chấm công               & Ghi nhận thời gian vào/ra làm việc của nhân viên.                                                 & Nhân viên                           \\
+	\hline
+	UC19        & Tính công               & Tính toán và xem tổng hợp giờ công, ngày công làm việc trong kỳ.                                  & Nhân viên                           \\
+	\hline
+	UC20        & Xin nghỉ                & Gửi yêu cầu xin nghỉ phép, nghỉ ốm hoặc các loại nghỉ khác.                                       & Nhân viên, Quản lý                  \\
+	\hline
+	UC21        & Đăng ký lịch làm việc   & Đăng ký ca làm việc mong muốn trong tuần/tháng tới.                                               & Nhân viên                           \\
+	\hline
+\end{longtable}
+
+\subsection{Quan hệ giữa các ca sử dụng}
+
+Các ca sử dụng trong hệ thống có các mối quan hệ sau:
+
+\begin{longtable}{|l|p{4.5cm}|p{7cm}|}
+	\hline
+	\textbf{Loại quan hệ} & \textbf{Ca sử dụng}                      & \textbf{Mô tả}                                                        \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\textbf{Loại quan hệ} & \textbf{Ca sử dụng}                      & \textbf{Mô tả}                                                        \\
+	\hline
+	\endhead
+
+	\hline
+	\endfoot
+
+	\hline
+	\caption{Quan hệ giữa các ca sử dụng} \label{tab:uc-relations}                                                                           \\
+	\endlastfoot
+
+	Extend                & Chế biến thực phẩm $\leftarrow$ Bán hàng & Khi đơn hàng có sản phẩm chế biến thì kích hoạt quy trình chế biến.   \\
+	\hline
+	Extend                & Tiêu huỷ $\leftarrow$ Làm lại đơn hàng   & Khi làm lại đơn hàng có thể cần tiêu huỷ đơn cũ.                      \\
+	\hline
+	Generalization        & Quản lý $\rightarrow$ Nhân viên          & Quản lý kế thừa tất cả quyền của Nhân viên và có thêm quyền quản trị. \\
+	\hline
+\end{longtable}
+
+\vfill
+
+\subsection{Biểu đồ ca sử dụng tổng quan}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{assets/diagram_usecase.png}
+	\caption{Biểu đồ ca sử dụng Hệ thống CVS}
+	\label{fig:usecase-diagram}
+\end{figure}
+
+\clearpage
+
+\section{Đặc tả chi tiết các ca sử dụng}
+
+Phần này trình bày đặc tả chi tiết cho các ca sử dụng quan trọng nhất của hệ thống.
+
+\subsection{Đặc tả ca sử dụng Bán hàng}
+
+\textbf{Ca sử dụng:} UC04 - Bán hàng \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập vào hệ thống.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Chọn chức năng bán hàng trên giao diện chính.
+	\item \textbf{Hệ thống}: Hiển thị giao diện bán hàng, sẵn sàng quét mã hoặc tìm kiếm sản phẩm.
+	\item \textbf{Nhân viên}: Quét mã vạch sản phẩm hoặc tìm kiếm theo tên.
+	\item \textbf{Hệ thống}: Thêm sản phẩm vào giỏ hàng, hiển thị tên, số lượng, đơn giá và thành tiền. Nếu có khuyến mại, hệ thống tự động áp dụng.
+	\item \textbf{Nhân viên}: Điều chỉnh số lượng sản phẩm nếu khách mua nhiều (tùy chọn).
+	\item \textbf{Hệ thống}: Cập nhật lại tổng tiền đơn hàng.
+	\item \textbf{Nhân viên}: Nhấn nút "Thanh toán" khi đã nhập đủ sản phẩm.
+	\item \textbf{Hệ thống}: Hiển thị màn hình chọn phương thức thanh toán (Tiền mặt, Chuyển khoản, Thẻ, Ví điện tử).
+	\item \textbf{Khách hàng}: Thanh toán tiền cho đơn hàng.
+	\item \textbf{Nhân viên}: Xác nhận thanh toán thành công trên hệ thống.
+	\item \textbf{Hệ thống}: Lưu thông tin đơn hàng, cập nhật trừ kho và gửi lệnh in hóa đơn.
+	\item \textbf{Máy in}: In hóa đơn cho khách hàng.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[4a.] \textbf{Không tìm thấy sản phẩm:} Hệ thống thông báo không tìm thấy mã vạch. Nhân viên tìm kiếm thủ công bằng tên hoặc chọn từ danh mục. Quay lại bước 4.
+	\item[9a.] \textbf{Thanh toán thất bại:} Cổng thanh toán báo lỗi (thẻ lỗi, ví không đủ tiền). Hệ thống thông báo lỗi. Nhân viên yêu cầu khách chọn phương thức thanh toán khác. Quay lại bước 8.
+	\item[7a.] \textbf{Hủy đơn hàng:} Khách không mua nữa. Nhân viên chọn "Hủy đơn". Hệ thống xóa giỏ hàng hiện tại. Ca sử dụng kết thúc.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Đơn hàng được lưu vào lịch sử, kho hàng được cập nhật giảm số lượng, doanh thu được ghi nhận cho ca làm việc hiện tại.
+
+\subsection{Đặc tả ca sử dụng Nhập hàng}
+
+\textbf{Ca sử dụng:} UC08 - Nhập hàng \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống. Thông tin nhà cung cấp đã được cấu hình trong hệ thống.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Chọn chức năng nhập hàng từ menu.
+	\item \textbf{Hệ thống}: Hiển thị danh sách phiếu nhập và nút tạo phiếu nhập mới.
+	\item \textbf{Nhân viên}: Chọn "Tạo phiếu nhập mới", chọn nhà cung cấp.
+	\item \textbf{Nhân viên}: Quét mã hoặc tìm kiếm sản phẩm cần nhập.
+	\item \textbf{Hệ thống}: Hiển thị thông tin sản phẩm và ô nhập số lượng, giá nhập.
+	\item \textbf{Nhân viên}: Nhập số lượng dự kiến và giá nhập.
+	\item \textbf{Hệ thống}: Thêm sản phẩm vào danh sách nhập, tự động tính tổng tiền phiếu nhập.
+	\item \textbf{Nhân viên}: Lặp lại bước 4-7 cho đến khi hoàn tất danh sách.
+	\item \textbf{Nhân viên}: Nhấn "Lưu phiếu nhập" để tạo phiếu nhập với trạng thái "Chờ giao".
+	\item \textbf{Hệ thống}: Lưu phiếu nhập, gửi yêu cầu đến Nhà cung cấp.
+	\item \textbf{Nhà cung cấp}: Giao hàng theo phiếu nhập.
+	\item \textbf{Nhân viên}: Kiểm tra hàng thực tế nhận được, đối chiếu với phiếu nhập.
+	\item \textbf{Nhân viên}: Xác nhận số lượng thực nhận trên giao diện.
+	\item \textbf{Nhân viên}: Nhấn "Xác nhận nhập kho".
+	\item \textbf{Hệ thống}: Cập nhật tồn kho theo số lượng thực nhận, lưu lịch sử nhập hàng kèm ghi chú thay đổi (nếu có).
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[4a.] \textbf{Sản phẩm chưa có trong hệ thống:} Hệ thống thông báo không tìm thấy sản phẩm. Nhân viên chọn "Tạo sản phẩm mới", nhập thông tin (tên, giá bán, danh mục). Hệ thống lưu sản phẩm mới. Quay lại bước 5.
+	\item[12a.] \textbf{Số lượng chênh lệch với phiếu nhập ban đầu:} Hệ thống hiển thị giao diện nhập số lượng thực tế và ghi chú lý do (hàng hỏng, thiếu, ...). Nhân viên nhập thông tin. Quay lại bước 13.
+	\item[12b.] \textbf{Hàng không đúng hoàn toàn:} Nhà cung cấp giao sai hàng hoặc hàng hỏng toàn bộ. Nhân viên từ chối nhận, ghi chú lý do. Hệ thống cập nhật trạng thái phiếu nhập thành "Từ chối". Ca sử dụng kết thúc.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Số lượng tồn kho được cập nhật theo số lượng thực nhận. Hệ thống ghi nhận phiếu nhập, chi phí nhập hàng và lịch sử thay đổi (nếu có chênh lệch).
+
+\subsection{Đặc tả ca sử dụng Quản lý ca làm việc}
+
+\textbf{Ca sử dụng:} UC10 - Quản lý ca làm việc \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống. Ca làm việc trước đó đã được đóng (hoặc đây là ca đầu tiên).
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Hệ thống}: Yêu cầu xác nhận mở ca (Open Shift) và khai báo tiền đầu ca (Tiền quỹ).
+	\item \textbf{Nhân viên}: Đếm tiền thực tế trong két và nhập số tiền đầu ca.
+	\item \textbf{Hệ thống}: Ghi nhận trạng thái mở ca và bắt đầu phiên làm việc.
+	\item \textbf{Nhân viên}: Thực hiện các hoạt động bán hàng trong ca.
+	\item \textbf{Nhân viên}: Chọn chức năng "Kết ca" (Close Shift) khi hết giờ làm.
+	\item \textbf{Hệ thống}: Hiển thị bảng tổng kết doanh thu dự kiến (tiền mặt, thẻ, chuyển khoản) dựa trên các đơn hàng đã bán.
+	\item \textbf{Nhân viên}: Đếm tiền thực tế trong két và nhập vào hệ thống.
+	\item \textbf{Hệ thống}: So sánh tiền thực tế và tiền dự kiến (System expected). Hiển thị chênh lệch (thừa/thiếu) nếu có.
+	\item \textbf{Nhân viên}: Nhập lý do chênh lệch (nếu có) và xác nhận kết ca.
+	\item \textbf{Hệ thống}: Lưu báo cáo ca làm việc.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Ca làm việc được đóng lại. Báo cáo doanh thu, tiền mặt, chênh lệch được lưu trữ để Quản lý đối soát.
+
+\subsection{Đặc tả ca sử dụng Đăng nhập}
+
+\textbf{Ca sử dụng:} UC01 - Đăng nhập \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã có tài khoản
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Mở ứng dụng bán hàng trên thiết bị POS.
+	\item \textbf{Hệ thống}: Hiển thị giao diện yêu cầu nhập mã PIN.
+	\item \textbf{Nhân viên}: Nhập mã PIN cá nhân.
+	\item \textbf{Hệ thống}: Xác thực thông tin đăng nhập.
+	\item \textbf{Hệ thống}: Nếu thông tin đúng, chuyển hướng vào màn hình chính với quyền hạn tương ứng.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[4a.] \textbf{Mã PIN không đúng:} Hệ thống hiển thị thông báo "Đăng nhập thất bại". Nhân viên nhập lại mã PIN. Quay lại bước 4.
+	\item[4b.] \textbf{Quên mã PIN:} Hệ thống hiển thị hộp thoại yêu cầu nhập e-mail đăng ký. Nhân viên nhập địa chỉ e-mail, hệ thống gửi mã PIN mới vào hòm thư. Qauy lại bước 3.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Nhân viên truy cập được vào hệ thống với quyền hạn đã được cấp.
+
+\subsection{Đặc tả ca sử dụng Chế biến thực phẩm}
+
+\textbf{Ca sử dụng:} UC05 - Chế biến thực phẩm \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống. Công thức chế biến đã được cấu hình. Nguyên liệu có sẵn trong kho.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính (Chế biến từ đơn hàng):}
+\begin{enumerate}
+	\item \textbf{Hệ thống}: Nhận đơn hàng có sản phẩm cần chế biến từ UC04 - Bán hàng.
+	\item \textbf{Máy in nhiệt}: In phiếu chế biến (phiếu bếp/bar) với thông tin món và số lượng.
+	\item \textbf{Nhân viên}: Nhận phiếu, thực hiện chế biến theo công thức.
+	\item \textbf{Nhân viên}: Hoàn thành chế biến, thu hồi phiếu chế biến.
+	\item \textbf{Nhân viên}: Giao sản phẩm cho khách hàng.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[1a.] \textbf{Chế biến để fill đồ (duy trì tồn kho):} Nhân viên chọn chức năng "Chế biến" từ menu. Hệ thống hiển thị danh sách sản phẩm có thể chế biến. Nhân viên chọn sản phẩm và nhập số lượng cần chế biến. Hệ thống kiểm tra nguyên liệu, tự động trừ kho nguyên liệu theo công thức. Nhân viên xác nhận hoàn thành. Hệ thống cập nhật tăng tồn kho sản phẩm chế biến.
+	\item[3a.] \textbf{Thiếu nguyên liệu:} Nhân viên phát hiện thiếu nguyên liệu khi chế biến. Nhân viên thông báo cho khách và đề xuất món thay thế hoặc hoàn tiền. Quay lại UC04 để xử lý.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Sản phẩm được chế biến và giao cho khách (hoặc cập nhật tồn kho nếu fill đồ). Nguyên liệu được trừ theo công thức.
+
+\subsection{Đặc tả ca sử dụng Làm lại đơn hàng}
+
+\textbf{Ca sử dụng:} UC06 - Làm lại đơn hàng \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống. Đơn hàng cần làm lại đã tồn tại trong lịch sử.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Khách hàng}: Phàn nàn về sản phẩm (hỏng, sai món, không đúng yêu cầu, ...).
+	\item \textbf{Nhân viên}: Tiếp nhận phàn nàn, chọn chức năng "Làm lại đơn hàng".
+	\item \textbf{Nhân viên}: Tìm kiếm và chọn đơn hàng cần làm lại từ lịch sử.
+	\item \textbf{Hệ thống}: Hiển thị chi tiết đơn hàng và các sản phẩm.
+	\item \textbf{Nhân viên}: Chọn sản phẩm cần làm lại, nhấn "Làm lại".
+	\item \textbf{Hệ thống}: Hiển thị form yêu cầu nhập lý do làm lại và thông tin nguyên liệu thất thoát.
+	\item \textbf{Nhân viên}: Nhập lý do và xác nhận nguyên liệu bị hao hụt.
+	\item \textbf{Nhân viên}: Nhấn "Xác nhận làm lại".
+	\item \textbf{Hệ thống}: Tự động tạo phiếu tiêu hủy cho sản phẩm lỗi (UC07), trừ nguyên liệu thất thoát.
+	\item \textbf{Máy in nhiệt}: In phiếu chế biến mới.
+	\item \textbf{Nhân viên}: Thực hiện chế biến lại sản phẩm.
+	\item \textbf{Nhân viên}: Giao sản phẩm mới cho khách hàng.
+	\item \textbf{Nhân viên}: Nhấn "Hoàn tất" trên hệ thống.
+	\item \textbf{Hệ thống}: Lưu lịch sử làm lại đơn hàng, ghi nhận nguyên liệu thất thoát.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[5a.] \textbf{Hoàn tiền thay vì làm lại:} Khách yêu cầu hoàn tiền. Nhân viên chọn "Hoàn tiền", nhập lý do. Hệ thống xử lý hoàn tiền và ghi nhận. Ca sử dụng kết thúc.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Sản phẩm mới được giao cho khách. Lịch sử làm lại và nguyên liệu thất thoát được ghi nhận để báo cáo.
+
+\subsection{Đặc tả ca sử dụng Tiêu huỷ}
+
+\textbf{Ca sử dụng:} UC07 - Tiêu huỷ \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Chọn chức năng "Tiêu huỷ" từ menu.
+	\item \textbf{Hệ thống}: Hiển thị giao diện tiêu huỷ với danh sách sản phẩm.
+	\item \textbf{Nhân viên}: Tìm kiếm và chọn sản phẩm cần tiêu huỷ.
+	\item \textbf{Nhân viên}: Nhập số lượng tiêu huỷ và lý do (hết hạn, hỏng, rơi vỡ, ...).
+	\item \textbf{Nhân viên}: Nhấn "Xác nhận tiêu huỷ".
+	\item \textbf{Hệ thống}: Hiển thị xác nhận tổng giá trị hàng tiêu huỷ.
+	\item \textbf{Nhân viên}: Xác nhận lần cuối.
+	\item \textbf{Hệ thống}: Trừ tồn kho, lưu lịch sử tiêu huỷ kèm lý do và người thực hiện.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Tồn kho được cập nhật giảm. Lịch sử tiêu huỷ được ghi nhận để đối soát và báo cáo thất thoát.
+
+\subsection{Đặc tả ca sử dụng Kiểm kê tồn kho}
+
+\textbf{Ca sử dụng:} UC09 - Kiểm kê tồn kho \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Chọn chức năng "Kiểm kê tồn kho" từ menu.
+	\item \textbf{Hệ thống}: Hiển thị danh sách sản phẩm với số lượng tồn kho hiện tại theo hệ thống.
+	\item \textbf{Nhân viên}: Chọn sản phẩm cần kiểm kê.
+	\item \textbf{Hệ thống}: Hiển thị số lượng hệ thống và form nhập số lượng thực tế.
+	\item \textbf{Nhân viên}: Đếm hàng thực tế, nhập số lượng vào form.
+	\item \textbf{Hệ thống}: So sánh và hiển thị chênh lệch (nếu có).
+	\item \textbf{Nhân viên}: Nhập lý do chênh lệch (nếu có): hao hụt, mất mát, nhập sai trước đó, ...
+	\item \textbf{Nhân viên}: Nhấn "Xác nhận kiểm kê".
+	\item \textbf{Hệ thống}: Cập nhật tồn kho theo số lượng thực tế, lưu lịch sử điều chỉnh kèm lý do.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Tồn kho được cập nhật chính xác theo thực tế. Lịch sử kiểm kê và điều chỉnh được lưu để đối soát.
+
+\subsection{Đặc tả ca sử dụng Chấm công}
+
+\textbf{Ca sử dụng:} UC18 - Chấm công \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên có tài khoản hợp lệ trong hệ thống.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Mở ứng dụng và đăng nhập hệ thống.
+	\item \textbf{Hệ thống}: Hiển thị màn hình chính với nút "Clock-in" hoặc "Clock-out" tùy trạng thái.
+	\item \textbf{Nhân viên}: Nhấn "Clock-in" khi bắt đầu làm việc.
+	\item \textbf{Hệ thống}: Ghi nhận thời gian vào làm, hiển thị xác nhận.
+	\item \textbf{Nhân viên}: Thực hiện công việc trong ca.
+	\item \textbf{Nhân viên}: Nhấn "Clock-out" khi kết thúc làm việc.
+	\item \textbf{Hệ thống}: Ghi nhận thời gian ra, tính tổng giờ làm trong ngày, hiển thị xác nhận.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[3a.] \textbf{Quên clock-in:} Nhân viên quên chấm công đầu ca. Nhân viên báo Quản lý để điều chỉnh thủ công trong UC19 - Tính công.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Thời gian làm việc của nhân viên được ghi nhận để tính công.
+
+\subsection{Đặc tả ca sử dụng Xin nghỉ}
+
+\textbf{Ca sử dụng:} UC20 - Xin nghỉ \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Chọn chức năng "Xin nghỉ" từ menu.
+	\item \textbf{Hệ thống}: Hiển thị form xin nghỉ với các trường: ngày nghỉ, loại nghỉ (phép, ốm, việc riêng), lý do.
+	\item \textbf{Nhân viên}: Điền thông tin và gửi yêu cầu.
+	\item \textbf{Hệ thống}: Lưu yêu cầu với trạng thái "Chờ duyệt", thông báo đến Quản lý.
+	\item \textbf{Quản lý}: Xem danh sách yêu cầu xin nghỉ, chọn yêu cầu cần xử lý.
+	\item \textbf{Quản lý}: Phê duyệt hoặc từ chối yêu cầu, có thể ghi chú.
+	\item \textbf{Hệ thống}: Cập nhật trạng thái yêu cầu, thông báo kết quả cho Nhân viên.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[6a.] \textbf{Từ chối yêu cầu:} Quản lý từ chối với lý do (thiếu người, không hợp lệ, ...). Hệ thống thông báo cho Nhân viên. Ca sử dụng kết thúc.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Yêu cầu nghỉ được phê duyệt hoặc từ chối. Lịch làm việc được cập nhật tương ứng.
+
+\subsection{Đặc tả ca sử dụng Đăng ký lịch làm việc}
+
+\textbf{Ca sử dụng:} UC21 - Đăng ký lịch làm việc \\
+\textbf{Tiền điều kiện:} \\
+Nhân viên đã đăng nhập hệ thống. Quản lý đã tạo các ca làm việc khả dụng.
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện chính:}
+\begin{enumerate}
+	\item \textbf{Nhân viên}: Chọn chức năng "Đăng ký lịch làm việc" từ menu.
+	\item \textbf{Hệ thống}: Hiển thị lịch tuần/tháng với các ca làm việc khả dụng.
+	\item \textbf{Nhân viên}: Chọn các ca muốn đăng ký.
+	\item \textbf{Hệ thống}: Kiểm tra xung đột (đã đăng ký ca khác, vượt giờ làm tối đa, ...).
+	\item \textbf{Hệ thống}: Hiển thị xác nhận đăng ký thành công.
+	\item \textbf{Hệ thống}: Cập nhật lịch làm việc của nhân viên.
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent \textbf{Luồng sự kiện thay thế:}
+\begin{description}
+	\item[4a.] \textbf{Xung đột lịch:} Hệ thống phát hiện xung đột (đã có ca, vượt giờ). Hiển thị cảnh báo, yêu cầu chọn ca khác. Quay lại bước 3.
+	\item[4b.] \textbf{Ca đã đầy:} Ca làm việc đã đủ số người đăng ký. Hệ thống thông báo và đề xuất ca khác. Quay lại bước 3.
+\end{description}
+
+\vspace{0.5em}
+\noindent \textbf{Hậu điều kiện:} \\
+Nhân viên được ghi nhận vào ca làm việc đã chọn. Lịch làm việc được cập nhật.

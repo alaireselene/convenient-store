@@ -1,0 +1,63 @@
+{
+    "latex-workshop.latex.tools": [
+        {
+            "name": "lualatex",
+            "command": "lualatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "lualatex-fast",
+            "command": "lualatex",
+            "args": [
+                "-synctex=0",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-draftmode",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "biber",
+            "command": "biber",
+            "args": [
+                "%DOCFILE%"
+            ],
+            "env": {}
+        }
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "Quick Build (LuaLaTeX)",
+            "tools": [
+                "lualatex"
+            ]
+        },
+        {
+            "name": "Error checking",
+            "tools": [
+                "lualatex-fast"
+            ]
+        },
+        {
+            "name": "Full Build (LuaLaTeX -> Biber -> LuaLaTeX * 2)",
+            "tools": [
+                "lualatex",
+                "biber",
+                "lualatex",
+                "lualatex"
+            ]
+        }
+    ],
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "latex-workshop.latex.outDir": "%DIR%",
+    "latex-workshop.latex.rootFile.doNotPrompt": true,
+    "latex-workshop.formatting.latex": "tex-fmt"
+}

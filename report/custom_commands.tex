@@ -1,0 +1,73 @@
+% !TEX root = main.tex
+
+% Packages required for Use Case command
+\usepackage[table]{xcolor}
+\usepackage{longtable}
+\usepackage{float}
+
+% Define template colors
+\definecolor{ucLabel}{HTML}{C5E0B4} % Light Green
+\definecolor{ucHeader}{HTML}{F8CBAD} % Peach/Orange
+
+% Use Case Environment using longtable for page breaking and fixed width
+\newcounter{ucstepcnt}
+\newcounter{ucaltcnt}
+
+% Column widths
+% Col 1: 2.5cm (Centered)
+% Col 2: 12.0cm
+% Total content: 14.5cm
+
+\newenvironment{usecasetable}[2]{%
+	\setcounter{ucstepcnt}{0}%
+	\setcounter{ucaltcnt}{0}%
+	\renewcommand{\arraystretch}{1.4}%
+	\begin{longtable}{|>{\columncolor{ucLabel}\bfseries\centering\arraybackslash}p{2.5cm}|p{12.0cm}|}
+		\hline
+		Mã ca  & #1 \\ \hline
+		Tên ca & #2 \\ \hline
+		}{%
+	\end{longtable}
+}
+
+% Pre-condition
+\newcommand{\ucpre}[1]{%
+\rowcolor{ucLabel}
+\multicolumn{2}{|c|}{\bfseries Tiền điều kiện} \\ \hline
+\multicolumn{2}{|p{15cm}|}{#1} \\ \hline
+}
+
+% Main flow header
+\newcommand{\ucmain}{%
+	\rowcolor{ucLabel}
+	\multicolumn{2}{|c|}{\bfseries Luồng sự kiện chính} \\ \hline
+	\rowcolor{ucHeader}
+	\bfseries STT & \centering\bfseries\arraybackslash Thực hiện bởi / Hành động \\ \hline
+}
+
+% Main flow step
+\newcommand{\ucstep}[3]{%
+	\stepcounter{ucstepcnt}%
+	\theucstepcnt & \textbf{#2}: #3 \\ \hline
+}
+
+% Alternative flow header
+\newcommand{\ucalthead}{%
+	\rowcolor{ucLabel}
+	\multicolumn{2}{|c|}{\bfseries Luồng sự kiện thay thế} \\ \hline
+	\rowcolor{ucHeader}
+	\bfseries STT & \centering\bfseries\arraybackslash Thực hiện bởi / Hành động \\ \hline
+}
+
+% Alternative flow step
+\newcommand{\ucalt}[3]{%
+	\stepcounter{ucaltcnt}%
+	\theucaltcnt & \textbf{#2}: #3 \\ \hline
+}
+
+% Post condition
+\newcommand{\ucpost}[1]{%
+\rowcolor{ucLabel}
+\multicolumn{2}{|c|}{\bfseries Hậu điều kiện} \\ \hline
+\multicolumn{2}{|p{15cm}|}{#1} \\ \hline
+}
