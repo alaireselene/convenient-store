@@ -1,6 +1,8 @@
 % !TEX root = ../main.tex
 \chapter{ĐẶC TẢ YÊU CẦU}
 
+Trong chương này, chúng ta xác định các ca sử dụng (use cases) trong hệ thống, đặc tả một số ca sử dụng quan trọng để hoàn tất thiết kế usecase.
+
 \section{Biểu đồ ca sử dụng}
 
 \subsection{Các tác nhân của hệ thống}
@@ -79,24 +81,22 @@ Dựa trên phân tích yêu cầu, hệ thống CVS có các ca sử dụng nh�
 	\hline
 	UC10        & Quản lý ca làm việc     & Thực hiện quy trình Mở/đóng ca gồm ghi nhận doanh thu và kiểm đếm tiền quỹ.                       & Nhân viên                           \\
 	\hline
-	UC11        & Quản lý công thức       & Tạo, sửa, xóa công thức chế biến cho các sản phẩm.                                                & Quản lý                             \\
+ UC11        & Quản lý công thức       & CRUD công thức chế biến cho các sản phẩm.                                                & Quản lý                             \\
 	\hline
-	UC12        & Quản lý combo           & Thiết lập các gói combo sản phẩm.                                                                 & Quản lý                             \\
+ UC12        & Quản lý combo           & CRUD các gói combo sản phẩm.                                                                 & Quản lý                             \\
 	\hline
-	UC13        & Quản lý danh mục hàng   & Quản lý danh mục sản phẩm (trong kho, sản phẩm bán), thông tin hàng hóa, giá bán.                 & Quản lý                             \\
+ UC13        & Quản lý danh mục hàng   & CRUD danh mục sản phẩm (trong kho, sản phẩm bán), thông tin hàng hóa, giá bán.                 & Quản lý                             \\
 	\hline
-	UC14        & Quản lý khuyến mại      & Tạo và quản lý các chương trình khuyến mại, giảm giá.                                             & Quản lý                             \\
+ UC14        & Quản lý khuyến mại      & CRUD các chương trình khuyến mại, giảm giá.                                             & Quản lý                             \\
 	\hline
-	UC15        & Quản lý nhân viên       & Thêm, sửa, xóa thông tin nhân viên và phân quyền truy cập.                                        & Quản lý                             \\
+ UC15        & Quản lý nhân viên       & CRUD nhân viên, phân quyền truy cập và quản lý giờ làm                                        & Quản lý                             \\
 	\hline
 	UC16        & Cấu hình hệ thống       & Thiết lập các thông số hệ thống: thông tin cửa hàng, máy in, thuế suất, tài khoản thanh toán, ... & Quản lý                             \\
 	\hline
 	UC17        & Báo cáo thống kê        & Xem báo cáo doanh thu, lợi nhuận, hàng bán chạy và các thống kê khác.                             & Quản lý                             \\
 	\hline
 	UC18        & Chấm công               & Ghi nhận thời gian vào/ra làm việc của nhân viên.                                                 & Nhân viên                           \\
-	\hline
-	UC19        & Tính công               & Tính toán và xem tổng hợp giờ công, ngày công làm việc trong kỳ.                                  & Nhân viên                           \\
-	\hline
+ \hline
 	UC20        & Xin nghỉ                & Gửi yêu cầu xin nghỉ phép, nghỉ ốm hoặc các loại nghỉ khác.                                       & Nhân viên, Quản lý                  \\
 	\hline
 	UC21        & Đăng ký lịch làm việc   & Đăng ký ca làm việc mong muốn trong tuần/tháng tới.                                               & Nhân viên                           \\
@@ -148,7 +148,7 @@ Các ca sử dụng trong hệ thống có các mối quan hệ sau:
 
 \section{Đặc tả chi tiết các ca sử dụng}
 
-Phần này trình bày đặc tả chi tiết cho các ca sử dụng quan trọng nhất của hệ thống.
+Phần này trình bày đặc tả chi tiết cho các ca sử dụng quan trọng của hệ thống.
 
 \subsection{Đặc tả ca sử dụng Bán hàng}
 
@@ -467,3 +467,65 @@ Nhân viên đã đăng nhập hệ thống. Quản lý đã tạo các ca làm 
 \vspace{0.5em}
 \noindent \textbf{Hậu điều kiện:} \\
 Nhân viên được ghi nhận vào ca làm việc đã chọn. Lịch làm việc được cập nhật.
+
+\section{Quy trình nghiệp vụ}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC01_DangNhap.png}
+  \caption{Quy trình Đăng nhập}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC04_BanHang.png}
+  \caption{Quy trình Bán hàng}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC08_NhapHang.png}
+  \caption{Quy trình Nhập hàng}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC10_QuanLyCaLamViec.png}
+  \caption{Quy trình Quản lý ca làm việc}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC05_CheBienThucPham.png}
+  \caption{Quy trình Chế biến thực phẩm}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC06_LamLaiDonHang.png}
+  \caption{Quy trình Làm lại đơn hàng}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC07_TieuHuy.png}
+  \caption{Quy trình Tiêu huỷ}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC09_KiemKeTonKho.png}
+  \caption{Quy trình Kiểm kê tồn kho}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC18_ChamCong.png}
+  \caption{Quy trình Chấm công}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC20_XinNghi.png}
+  \caption{Quy trình Xin nghỉ}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{assets/diagram_operation/UC21_DangKyLichLamViec.png}
+  \caption{Quy trình Đăng ký lịch làm việc}
+\end{figure}
+
+\section{Yêu cầu phi chức năng}
+- Các tính toán liên quan đến nghiệp vụ cần chính xác tuyệt đối
+- Thời gian khởi động app < 3s
+- Thiết kế giao diện trên máy POS tối ưu cho thao tác cảm ứng
