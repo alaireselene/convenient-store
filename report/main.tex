@@ -6,6 +6,7 @@
 % (*) '13pt': Cỡ chữ cơ bản cho toàn văn bản là 13pt.
 % (*) 'twoside': Định dạng tài liệu để in hai mặt, lề trái và lề phải của trang chẵn và lẻ sẽ khác nhau (inside/outside margins).
 \usepackage{scrextend} % Cung cấp thêm các lệnh mở rộng cho lớp tài liệu chuẩn.
+\usepackage{float}
 \changefontsizes{13pt} % Lệnh từ gói scrextend, áp dụng cỡ font chữ là 13 cho toàn văn bản.
 
 % =================== GÓI LỆNH BỐ CỤC & TRANG ===================
@@ -233,15 +234,11 @@
 
 \newpage
 %\pagestyle{fancy} % Áp dụng header và footer
-% \label{chapter:SolutionAndContribution}
-\input{chapters/5_Chuong_trinh_minh_hoa}
-\newpage
-%\pagestyle{fancy} % Áp dụng header và footer
 % \label{chapter:conclusion}
-\input{chapters/6_Nguyen_ly_thiet_ke}
+\input{chapters/5_Nguyen_ly_thiet_ke}
 
 \newpage
-\input{chapters/7_Ket_luan_huong_phat_trien}
+\input{chapters/6_Ket_luan_huong_phat_trien}
 %\pagestyle{fancy} % Áp dụng header và footer
 
 % ===================================================

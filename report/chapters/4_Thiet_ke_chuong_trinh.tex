@@ -1,49 +1,753 @@
 % !TEX root = ../main.tex
 \chapter{THIẾT KẾ CHƯƠNG TRÌNH}
+
+\section{Thiết kế cơ sở dữ liệu}
+
+\subsection{Tổng quan mô hình dữ liệu}
+
+Hệ thống Quản lý Cửa hàng Tiện lợi (CVS) được thiết kế với 32 bảng dữ liệu, phân chia thành 8 miền nghiệp vụ chính. Mô hình dữ liệu được xây dựng theo các nguyên tắc:
+
+\begin{itemize}
+  \item \textbf{Chuẩn hóa dữ liệu:} Các bảng được thiết kế ở dạng chuẩn 3NF để tránh dư thừa và đảm bảo tính nhất quán.
+  \item \textbf{Khả năng mở rộng đa cửa hàng:} Tất cả các bảng có phạm vi theo cửa hàng đều chứa khóa ngoại \texttt{store\_id}, sẵn sàng cho việc mở rộng hệ thống.
+  \item \textbf{Truy vết đầy đủ:} Mọi thay đổi tồn kho đều được ghi nhận trong bảng \texttt{stock\_movements} với đầy đủ thông tin: ai thực hiện, thời điểm, lý do và lô bị ảnh hưởng.
+  \item \textbf{Quản lý theo lô:} Hàng hóa được quản lý theo từng lô nhập với hạn sử dụng riêng biệt, hỗ trợ cơ chế FIFO (First-In-First-Out).
+\end{itemize}
+
+\subsection{Các miền dữ liệu}
+
+Hệ thống được chia thành 8 miền dữ liệu chính, mỗi miền phục vụ một nhóm ca sử dụng cụ thể:
+
+\begin{longtable}{|c|p{4cm}|p{6cm}}
+  \hline
+  \textbf{STT} & \textbf{Miền dữ liệu}  & \textbf{Các bảng}                                                                                                                                                                                              \\
+  \hline
+  \endfirsthead
+
+  \hline
+  \textbf{STT} & \textbf{Miền dữ liệu}  & \textbf{Các bảng}                                                                                                                                                                                              \\
+  \hline
+  \endhead
+
+  \hline
+  \endfoot
+
+  \hline
+  \caption{Phân chia các miền dữ liệu trong hệ thống} \label{tab:data-domains}                                                                                                                                                                           \\
+  \endlastfoot
+
+  1            & Xác thực \& Người dùng & \texttt{staff}, \texttt{sessions}                                                                                                                                                                              \\
+  \hline
+  2            & Quản lý ca \& Tiền mặt & \texttt{shifts}, \texttt{cash\_drops}                                                                                                                                                                          \\
+  \hline
+  3            & Nhân sự                & \texttt{shift\_templates}, \texttt{work\_schedules}, \texttt{timekeeping}, \texttt{leave\_requests}, \texttt{payroll\_periods}, \texttt{payroll\_records}                                                      \\
+  \hline
+  4            & Danh mục sản phẩm      & \texttt{categories}, \texttt{physical\_items}, \texttt{sales\_items}, \texttt{recipes}, \texttt{recipe\_items}, \texttt{combos}, \texttt{combo\_items}                                                         \\
+  \hline
+  5            & Quản lý kho            & \texttt{suppliers}, \texttt{receivings}, \texttt{receiving\_items}, \texttt{inventory\_batches}, \texttt{stock\_movements}, \texttt{conversions}, \texttt{inventory\_counts}, \texttt{inventory\_count\_items} \\
+  \hline
+  6            & Bán hàng               & \texttt{orders}, \texttt{order\_items}, \texttt{order\_item\_batches}, \texttt{payments}, \texttt{receipts}, \texttt{remakes}                                                                                  \\
+  \hline
+  7            & Tiêu hủy \& Kiểm soát  & \texttt{waste\_logs}                                                                                                                                                                                           \\
+  \hline
+  8            & Cấu hình \& Khuyến mại & \texttt{stores}, \texttt{payment\_method\_configs}, \texttt{printer\_configs}, \texttt{alerts}, \texttt{discount\_rules}, \texttt{discount\_rule\_items}                                                       \\
+  \hline
+\end{longtable}
+
+\subsection{Mô tả chi tiết các bảng dữ liệu}
+
+\subsubsection{Miền Xác thực và Người dùng}
+
+\textbf{Bảng staff} - Lưu trữ thông tin nhân viên:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                        \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng staff}                                                       \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính, tự động tăng              \\
+  \hline
+  name                & VARCHAR(100)          & Họ tên nhân viên                      \\
+  \hline
+  email               & VARCHAR(150)          & Email đăng ký (dùng để khôi phục PIN) \\
+  \hline
+  pin\_hash           & VARCHAR(255)          & Mã PIN đã được băm                    \\
+  \hline
+  role                & VARCHAR(20)           & Vai trò: STAFF hoặc MANAGER           \\
+  \hline
+  store\_id           & INTEGER               & Khóa ngoại đến bảng stores            \\
+  \hline
+  hourly\_rate        & INTEGER               & Lương theo giờ (đơn vị: đồng)         \\
+  \hline
+  is\_active          & BOOLEAN               & Trạng thái hoạt động                  \\
+  \hline
+  created\_at         & TIMESTAMPTZ           & Thời điểm tạo                         \\
+  \hline
+  updated\_at         & TIMESTAMPTZ           & Thời điểm cập nhật cuối               \\
+  \hline
+\end{longtable}
+
+\textbf{Bảng sessions} - Theo dõi phiên đăng nhập:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                                    \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng sessions}                                                                \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                                        \\
+  \hline
+  staff\_id           & INTEGER               & Khóa ngoại đến staff                              \\
+  \hline
+  shift\_id           & INTEGER               & Khóa ngoại đến shifts                             \\
+  \hline
+  login\_at           & TIMESTAMPTZ           & Thời điểm đăng nhập                               \\
+  \hline
+  logout\_at          & TIMESTAMPTZ           & Thời điểm đăng xuất (được phép trống)             \\
+  \hline
+  logout\_reason      & VARCHAR(20)           & Lý do đăng xuất: MANUAL, AUTO\_LOCK, FAST\_SWITCH \\
+  \hline
+\end{longtable}
+
+\subsubsection{Miền Quản lý ca và Tiền mặt}
+
+\textbf{Bảng shifts} - Quản lý ca làm việc:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                      \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng shifts}                                                    \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                          \\
+  \hline
+  staff\_id           & INTEGER               & Nhân viên mở ca                     \\
+  \hline
+  store\_id           & INTEGER               & Cửa hàng                            \\
+  \hline
+  start\_time         & TIMESTAMPTZ           & Thời điểm mở ca                     \\
+  \hline
+  end\_time           & TIMESTAMPTZ           & Thời điểm đóng ca                   \\
+  \hline
+  opening\_cash       & INTEGER               & Tiền mặt đầu ca                     \\
+  \hline
+  closing\_cash       & INTEGER               & Tiền mặt cuối ca (thực tế đếm)      \\
+  \hline
+  expected\_cash      & INTEGER               & Tiền mặt dự kiến (tính từ hệ thống) \\
+  \hline
+  cash\_variance      & INTEGER               & Chênh lệch (thực tế - dự kiến)      \\
+  \hline
+  variance\_reason    & VARCHAR(255)          & Lý do chênh lệch                    \\
+  \hline
+  status              & VARCHAR(20)           & Trạng thái: OPEN hoặc CLOSED        \\
+  \hline
+\end{longtable}
+
+\subsubsection{Miền Nhân sự}
+
+\textbf{Bảng timekeeping} - Chấm công nhân viên:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                            \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng timekeeping}                                                     \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                                \\
+  \hline
+  staff\_id           & INTEGER               & Nhân viên chấm công                       \\
+  \hline
+  work\_date          & DATE                  & Ngày làm việc                             \\
+  \hline
+  clock\_in           & TIMESTAMPTZ           & Thời điểm vào làm                         \\
+  \hline
+  clock\_out          & TIMESTAMPTZ           & Thời điểm ra về                           \\
+  \hline
+  total\_hours        & DECIMAL(5,2)          & Tổng giờ làm                              \\
+  \hline
+  status              & VARCHAR(20)           & PENDING, CLOCKED\_IN, COMPLETED, ADJUSTED \\
+  \hline
+  adjusted\_by        & INTEGER               & Người điều chỉnh (nếu có)                 \\
+  \hline
+  adjustment\_reason  & VARCHAR(255)          & Lý do điều chỉnh                          \\
+  \hline
+\end{longtable}
+
+\textbf{Bảng leave\_requests} - Đơn xin nghỉ phép:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                           \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng leave\_requests}                                                \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                               \\
+  \hline
+  staff\_id           & INTEGER               & Nhân viên xin nghỉ                       \\
+  \hline
+  leave\_type         & VARCHAR(30)           & Loại nghỉ: ANNUAL, SICK, PERSONAL, OTHER \\
+  \hline
+  start\_date         & DATE                  & Ngày bắt đầu nghỉ                        \\
+  \hline
+  end\_date           & DATE                  & Ngày kết thúc nghỉ                       \\
+  \hline
+  reason              & TEXT                  & Lý do xin nghỉ                           \\
+  \hline
+  status              & VARCHAR(20)           & PENDING, APPROVED, REJECTED              \\
+  \hline
+  reviewed\_by        & INTEGER               & Quản lý duyệt đơn                        \\
+  \hline
+  reviewer\_notes     & VARCHAR(255)          & Ghi chú của quản lý                      \\
+  \hline
+\end{longtable}
+
+\textbf{Bảng work\_schedules} - Đăng ký lịch làm việc:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                         \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng work\_schedules}                                              \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                             \\
+  \hline
+  staff\_id           & INTEGER               & Nhân viên đăng ký                      \\
+  \hline
+  shift\_template\_id & INTEGER               & Ca làm việc mẫu                        \\
+  \hline
+  work\_date          & DATE                  & Ngày làm việc                          \\
+  \hline
+  status              & VARCHAR(20)           & PENDING, APPROVED, REJECTED, CANCELLED \\
+  \hline
+  approved\_by        & INTEGER               & Quản lý phê duyệt                      \\
+  \hline
+\end{longtable}
+
+\subsubsection{Miền Danh mục sản phẩm}
+
+\textbf{Bảng physical\_items} - Hàng hóa vật lý (SKU trong kho):
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                       \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng physical\_items}                                            \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                           \\
+  \hline
+  name                & VARCHAR(150)          & Tên sản phẩm vật lý                  \\
+  \hline
+  barcode             & VARCHAR(50)           & Mã vạch (tùy chọn)                   \\
+  \hline
+  storage\_unit       & VARCHAR(30)           & Đơn vị lưu kho (gói, thùng, vỉ)      \\
+  \hline
+  prepared\_unit      & VARCHAR(30)           & Đơn vị sau chế biến (miếng, quả)     \\
+  \hline
+  conversion\_ratio   & DECIMAL(10,4)         & Tỷ lệ chuyển đổi (1 gói = 10 miếng)  \\
+  \hline
+  expiry\_hours       & INTEGER               & Thời gian hết hạn sau chế biến (giờ) \\
+  \hline
+  reorder\_threshold  & INTEGER               & Ngưỡng cảnh báo bổ sung              \\
+  \hline
+\end{longtable}
+
+\textbf{Bảng sales\_items} - Sản phẩm bán (SKU bán hàng):
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính}   & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                               \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng sales\_items}                                                         \\
+  \endlastfoot
+
+  id                    & SERIAL                & Khóa chính                                   \\
+  \hline
+  category\_id          & INTEGER               & Danh mục sản phẩm                            \\
+  \hline
+  physical\_item\_id    & INTEGER               & Liên kết đến hàng vật lý (nếu bán trực tiếp) \\
+  \hline
+  name                  & VARCHAR(150)          & Tên sản phẩm bán                             \\
+  \hline
+  price                 & INTEGER               & Giá bán (đồng)                               \\
+  \hline
+  near\_expiry\_price   & INTEGER               & Giá khi cận date                             \\
+  \hline
+  vat\_rate             & DECIMAL(5,2)          & Thuế suất VAT (0, 5, 8, 10\%)                \\
+  \hline
+  requires\_preparation & BOOLEAN               & Có cần chế biến không                        \\
+  \hline
+\end{longtable}
+
+\textbf{Bảng recipes và recipe\_items} - Công thức chế biến:
+
+Bảng \texttt{recipes} lưu thông tin công thức, liên kết 1-1 với \texttt{sales\_items} có \texttt{requires\_preparation = true}. Bảng \texttt{recipe\_items} lưu chi tiết nguyên liệu với số lượng cần thiết. Đây là cơ sở cho cơ chế \textbf{Backflushing} - tự động trừ kho nguyên liệu khi bán món chế biến.
+
+\subsubsection{Miền Quản lý kho}
+
+\textbf{Bảng inventory\_batches} - Quản lý lô hàng:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                       \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng inventory\_batches}                                         \\
+  \endlastfoot
+
+  id                  & SERIAL                & Khóa chính                           \\
+  \hline
+  physical\_item\_id  & INTEGER               & Sản phẩm vật lý                      \\
+  \hline
+  receiving\_item\_id & INTEGER               & Nguồn từ phiếu nhập (nếu có)         \\
+  \hline
+  source\_batch\_id   & INTEGER               & Lô nguồn (nếu là kết quả chuyển đổi) \\
+  \hline
+  quantity\_initial   & INTEGER               & Số lượng ban đầu                     \\
+  \hline
+  quantity\_remaining & INTEGER               & Số lượng còn lại                     \\
+  \hline
+  created\_at         & TIMESTAMPTZ           & Thời điểm tạo lô                     \\
+  \hline
+  expires\_at         & TIMESTAMPTZ           & Thời điểm hết hạn                    \\
+  \hline
+  batch\_state        & VARCHAR(30)           & STORAGE hoặc PREPARED                \\
+  \hline
+\end{longtable}
+
+Cơ chế FIFO được thực hiện bằng cách sắp xếp các lô theo \texttt{created\_at ASC} và trừ từ lô cũ nhất trước.
+
+\textbf{Bảng stock\_movements} - Nhật ký biến động kho:
+
+Đây là bảng trung tâm cho việc truy vết, ghi nhận mọi thay đổi tồn kho với các loại:
+\begin{itemize}
+  \item \texttt{RECEIVING}: Nhập hàng từ nhà cung cấp
+  \item \texttt{SALE}: Bán hàng (trừ kho)
+  \item \texttt{WASTE}: Tiêu hủy
+  \item \texttt{EXPIRY}: Hết hạn tự động
+  \item \texttt{CONVERSION\_IN/OUT}: Chuyển đổi trạng thái
+  \item \texttt{ADJUSTMENT}: Điều chỉnh kiểm kê
+  \item \texttt{VOID}: Hủy đơn hàng (hoàn kho)
+\end{itemize}
+
+\subsubsection{Miền Bán hàng}
+
+\textbf{Bảng orders} - Đơn hàng:
+
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{7cm}|}
+  \hline
+  \textbf{Thuộc tính}   & \textbf{Kiểu dữ liệu} & \textbf{Mô tả}                                   \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Cấu trúc bảng orders}                                                                   \\
+  \endlastfoot
+
+  id                    & SERIAL                & Khóa chính                                       \\
+  \hline
+  staff\_id             & INTEGER               & Nhân viên tạo đơn                                \\
+  \hline
+  shift\_id             & INTEGER               & Ca làm việc                                      \\
+  \hline
+  order\_number         & VARCHAR(10)           & Số đơn hàng (4 chữ số, reset hàng ngày)          \\
+  \hline
+  subtotal              & INTEGER               & Tổng tiền hàng                                   \\
+  \hline
+  discount\_total       & INTEGER               & Tổng giảm giá                                    \\
+  \hline
+  vat\_total            & INTEGER               & Tổng VAT                                         \\
+  \hline
+  grand\_total          & INTEGER               & Tổng thanh toán                                  \\
+  \hline
+  status                & VARCHAR(30)           & DRAFT, PENDING\_PAYMENT, PAID, COMPLETED, VOIDED \\
+  \hline
+  remake\_of\_order\_id & INTEGER               & Đơn gốc (nếu là đơn làm lại)                     \\
+  \hline
+\end{longtable}
+
+\textbf{Bảng order\_item\_batches} - Theo dõi FIFO khi bán:
+
+Bảng này ghi nhận chi tiết việc trừ kho từ những lô nào cho mỗi dòng đơn hàng, đảm bảo khả năng truy vết và hỗ trợ hoàn kho chính xác khi hủy đơn.
+
+\subsection{Biểu đồ quan hệ thực thể (ERD)}
+
+\begin{landscape}
+  \begin{figure}[p]
+    \centering
+    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{assets/diagram-erd.png}
+    \caption{Biểu đồ ERD tổng quan hệ thống CVS}
+    \label{fig:erd-overview}
+  \end{figure}
+\end{landscape}
+
+\subsection{Các ràng buộc toàn vẹn}
+
+\subsubsection{Ràng buộc khóa chính và khóa ngoại}
+
+Tất cả các bảng sử dụng khóa chính tự động tăng (\texttt{SERIAL}). Các quan hệ giữa các bảng được thực thi thông qua ràng buộc khóa ngoại với \texttt{ON DELETE RESTRICT} để ngăn chặn việc xóa dữ liệu đang được tham chiếu.
+
+\subsubsection{Ràng buộc nghiệp vụ}
+
+\begin{itemize}
+  \item \textbf{FIFO bắt buộc:} Mọi thao tác trừ kho phải tuân thủ FIFO, không có ngoại lệ.
+  \item \textbf{Không bán hàng hết hạn:} Hệ thống chặn việc bán từ các lô có \texttt{expires\_at < NOW()}.
+  \item \textbf{Không sửa đơn hàng:} Đơn hàng sau khi thanh toán không thể sửa, chỉ có thể hủy và tạo lại.
+  \item \textbf{Tiền lưu dạng số nguyên:} Tất cả giá trị tiền tệ lưu dưới dạng INTEGER (đơn vị: đồng) để tránh sai số làm tròn.
+  \item \textbf{PIN được băm:} Mã PIN không lưu plaintext, chỉ lưu giá trị đã băm.
+  \item \textbf{Soft delete cho audit:} Các bản ghi quan trọng (đơn hàng, phiếu tiêu hủy) không được xóa cứng, chỉ đánh dấu trạng thái.
+\end{itemize}
+
+\subsection{Quy ước đặt tên}
+
+\begin{longtable}{|p{4cm}|p{4cm}|p{5cm}|}
+  \hline
+  \textbf{Đối tượng} & \textbf{Quy ước}                & \textbf{Ví dụ}                                  \\
+  \hline
+  \endfirsthead
+  \endhead
+  \endfoot
+  \hline
+  \caption{Quy ước đặt tên trong CSDL}                                                                   \\
+  \endlastfoot
+
+  Tên bảng           & snake\_case, số nhiều           & \texttt{order\_items}, \texttt{physical\_items} \\
+  \hline
+  Tên cột            & snake\_case                     & \texttt{created\_at}, \texttt{unit\_price}      \\
+  \hline
+  Khóa chính         & \texttt{id}                     & \texttt{id SERIAL PRIMARY KEY}                  \\
+  \hline
+  Khóa ngoại         & \texttt{\{bảng\}\_id}           & \texttt{staff\_id}, \texttt{order\_id}          \\
+  \hline
+  Chỉ mục            & \texttt{idx\_\{bảng\}\_\{cột\}} & \texttt{idx\_orders\_created\_at}               \\
+  \hline
+  Timestamp          & TIMESTAMPTZ                     & Lưu kèm timezone                                \\
+  \hline
+  Tiền tệ            & INTEGER                         & Đơn vị: đồng Việt Nam                           \\
+  \hline
+\end{longtable}
+
 \section{Thiết kế giao diện người dùng}
 
 \subsection{Chuẩn hoá cấu hình màn hình}
 
+\subsubsection{Quy định về hiển thị}
+\begin{itemize}
+  \item \textbf{Độ phân giải:}
+    \begin{itemize}
+      \item Màn hình POS (Bán hàng): Tối ưu cho độ phân giải 1024x768 pixels (tỷ lệ 4:3) hoặc 1280x800 pixels, hỗ trợ thao tác cảm ứng với các nút bấm lớn.
+      \item Màn hình Quản lý: Tối ưu cho độ phân giải 1366x768 pixels trở lên trên trình duyệt web máy tính.
+    \end{itemize}
+  \item \textbf{Thông báo:}
+    \begin{itemize}
+      \item \textbf{Thông báo lỗi/cảnh báo:} Hiển thị dạng Popup (Modal) ở chính giữa màn hình, làm mờ nền phía sau, yêu cầu người dùng xác nhận hoặc sửa lỗi trước khi tiếp tục.
+      \item \textbf{Thông báo thành công:} Hiển thị dạng Toast message ở góc trên bên phải, tự động ẩn sau 3 giây.
+    \end{itemize}
+  \item \textbf{Định dạng dữ liệu:}
+    \begin{itemize}
+      \item \textbf{Số tiền:} Sử dụng dấu chấm (.) để phân cách hàng nghìn (Ví dụ: 100.000 đ). Đơn vị tiền tệ mặc định là VNĐ.
+      \item \textbf{Ngày tháng:} Định dạng dd/MM/yyyy (Ví dụ: 30/01/2026).
+      \item \textbf{Ký tự cho phép:} Chuỗi ký tự bao gồm chữ cái, chữ số, dấu phẩy, dấu chấm, dấu cách, dấu gạch dưới và gạch nối.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Cơ chế điều khiển}
+\begin{itemize}
+  \item \textbf{Kiểm tra dữ liệu đầu vào:}
+    \begin{itemize}
+      \item \textbf{Kiểm tra trường bắt buộc:} Kiểm tra các trường bắt buộc ngay khi người dùng rời khỏi ô nhập liệu (làm mờ) hoặc khi nhấn lưu.
+      \item \textbf{Kiểm tra định dạng:} Kiểm tra định dạng đúng của Email, Số điện thoại, Mã vạch.
+      \item \textbf{Logic nghiệp vụ:} Ví dụ: Số lượng tồn kho không được âm, Tiền khách đưa $\ge$ Tổng tiền thanh toán.
+    \end{itemize}
+  \item \textbf{Dịch chuyển màn hình:}
+    \begin{itemize}
+      \item Thiết kế theo hướng phẳng, hạn chế các khung chồng chéo.
+      \item Các màn hình chức năng (Bán hàng, Kho, Nhân sự) được tách biệt rõ ràng thông qua thanh điều hướng.
+      \item Các tác vụ phụ (như Hướng dẫn sử dụng, Chi tiết nhanh) có thể hiển thị dạng Popup đè lên màn hình chính, làm mờ màn hình dưới để tập trung sự chú ý.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Luồng màn hình hệ thống}
+
+Trình tự xuất hiện các màn hình trong kịch bản sử dụng thông thường:
+
+\begin{enumerate}
+  \item \textbf{Khởi động:} Màn hình chờ $\rightarrow$ Màn hình Đăng nhập.
+  \item \textbf{Trang chủ (Sau đăng nhập):}
+    \begin{itemize}
+      \item Với Nhân viên: Chuyển thẳng vào Màn hình POS (Bán hàng).
+      \item Với Quản lý: Chuyển vào Dashboard (Bảng điều khiển thống kê).
+    \end{itemize}
+  \item \textbf{Các luồng chức năng chính:}
+    \begin{itemize}
+      \item \textbf{Bán hàng:} POS $\rightarrow$ Chọn món $\rightarrow$ Chỉnh sửa đơn (Topping/Ghi chú) $\rightarrow$ Thanh toán (Tiền mặt/QR) $\rightarrow$ In hóa đơn $\rightarrow$ Kết thúc.
+      \item \textbf{Quản lý kho:} Danh sách nhập/xuất $\rightarrow$ Tạo phiếu nhập/xuất $\rightarrow$ Chọn hàng hóa $\rightarrow$ Xác nhận $\rightarrow$ Cập nhật tồn kho.
+      \item \textbf{Nhân sự:} Lịch làm việc $\rightarrow$ Đăng ký ca $\rightarrow$ Xin nghỉ phép $\rightarrow$ Chấm công.
+    \end{itemize}
+  \item \textbf{Màn hình lỗi (Error):} Khi hệ thống gặp sự cố, một thông điệp rõ ràng sẽ hiện lên thông báo vấn đề và hướng dẫn cách khắc phục (thử lại hoặc liên hệ kỹ thuật).
+\end{enumerate}
+
 \subsection{Các ảnh màn hình}
 
-Màn hình đăng nhập:
+% =============================================
+% NHÓM 1: ĐĂNG NHẬP & NHÂN VIÊN BÁN HÀNG
+% =============================================
 
-Màn hình nhân viên bán hàng:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/dang_nhap.png}
+  \caption{Màn hình đăng nhập}
+  \label{fig:dang_nhap}
+\end{figure}
 
-Màn hình nhân viên bán hàng - Lịch làm việc:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/nhan_vien_ban_hang.png}
+  \caption{Màn hình nhân viên bán hàng}
+  \label{fig:nhan_vien_ban_hang}
+\end{figure}
 
-Lịch làm việc - Đăng ký ca làm:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/lich_lam_viec.png}
+  \caption{Màn hình nhân viên bán hàng - Lịch làm việc}
+  \label{fig:lich_lam_viec}
+\end{figure}
 
-Màn hình POS:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/dang_ky_ca_lam.png}
+  \caption{Lịch làm việc - Đăng ký ca làm}
+  \label{fig:dang_ky_ca_lam}
+\end{figure}
 
-Màn hình POS - quản lý thực phẩm chế biến:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/xin_nghi.png}
+  \caption{Đơn xin nghỉ phép}
+  \label{fig:xin_nghi}
+\end{figure}
 
-Màn hình thanh toán của khách hàng (Độc lập):
+% =============================================
+% NHÓM 2: POS, THANH TOÁN & BẾP
+% =============================================
 
-Màn hình đăng nhập Nhân viên quản lý:
-Màn hình quản lý:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/pos.png}
+  \caption{Màn hình POS}
+  \label{fig:pos}
+\end{figure}
 
-Quản lý công thức:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/che_bien.png}
+  \caption{Màn hình POS - Quản lý thực phẩm chế biến}
+  \label{fig:che_bien}
+\end{figure}
 
-Quản lý combo:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/QR.png}
+  \caption{Màn hình thanh toán của khách hàng (Quét QR)}
+  \label{fig:qr}
+\end{figure}
 
-Quản lý khuyến mại:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/hoan_tien_lam_lai.png}
+  \caption{Màn hình Hoàn tiền / Làm lại món}
+  \label{fig:hoan_tien_lam_lai}
+\end{figure}
 
-Quản lý danh mục hàng - quản lý hàng nhập:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_nhap_xuat.png}
+  \caption{Quản lý nhập xuất kho}
+  \label{fig:nhap_xuat}
+\end{figure}
 
-Quản lý danh mục hàng - quản lý hàng bán:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/popup_ket_thuc_ca.png}
+  \caption{Popup kết thúc ca làm việc}
+  \label{fig:popup_ket_thuc_ca}
+\end{figure}
 
-Quản lý danh mục hàng - quản lý nhập xuất:
+% =============================================
+% NHÓM 3: QUẢN LÝ (DASHBOARD & THIẾT LẬP)
+% =============================================
 
-Quản lý nhân viên:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/man_hinh_quan_ly.png}
+  \caption{Giao diện quản lý chính}
+  \label{fig:man_hinh_quan_ly}
+\end{figure}
 
-quản lý tài khoản:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/dashboard_tong_quan.png}
+  \caption{Hệ thống quản lý - Dashboard tổng quan}
+  \label{fig:dashboard}
+\end{figure}
 
-Cấu hình hệ thống:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/cong_thuc_che_bien.png}
+  \caption{Quản lý công thức chế biến}
+  \label{fig:cong_thuc}
+\end{figure}
 
-Báo cáo thống kê:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_combo.png}
+  \caption{Quản lý Combo}
+  \label{fig:combo}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_khuyen_mai.png}
+  \caption{Quản lý khuyến mại}
+  \label{fig:khuyen_mai}
+\end{figure}
+
+% =============================================
+% NHÓM 4: KHO & DANH MỤC HÀNG HÓA
+% =============================================
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_danh_muc_nhap.png}
+  \caption{Quản lý danh mục hàng - Hàng nhập}
+  \label{fig:dm_nhap}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_danh_muc_ban.png}
+  \caption{Quản lý danh mục hàng - Hàng bán}
+  \label{fig:dm_ban}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_nhap_xuat_kho.png}
+  \caption{Chi tiết danh sách nhập xuất kho}
+  \label{fig:nhap_xuat_kho}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/phieu_nhap_kho.png}
+  \caption{Phiếu nhập kho}
+  \label{fig:phieu_nhap_kho}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/phieu_huy_hang.png}
+  \caption{Phiếu hủy hàng}
+  \label{fig:phieu_huy_hang}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/phieu_kiem_ke.png}
+  \caption{Phiếu kiểm kê kho}
+  \label{fig:phieu_kiem_ke}
+\end{figure}
+
+% =============================================
+% NHÓM 5: NHÂN SỰ & HỆ THỐNG
+% =============================================
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/danh_sach_nhan_vien.png}
+  \caption{Quản lý danh sách nhân viên}
+  \label{fig:ql_nhan_vien}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/phan_ca_lam_viec.png}
+  \caption{Phân ca làm việc}
+  \label{fig:phan_ca}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/quan_ly_tai_khoan.png}
+  \caption{Quản lý tài khoản}
+  \label{fig:ql_tai_khoan}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/cau_hinh_he_thong.png}
+  \caption{Cấu hình hệ thống}
+  \label{fig:cau_hinh}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/bao_cao_thong_ke.png}
+  \caption{Báo cáo thống kê}
+  \label{fig:bao_cao}
+\end{figure}
 
 \subsection{Sơ đồ chuyển màn hình}
-
-\section{Thiết kế cơ sở dữ liệu}
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{assets/anh_man_hinh/chuyen_man_hinh.png}
+  \caption{Sơ đồ chuyển màn hình}
+  \label{fig:chuyen_man_hinh}
+\end{figure}
+% Chèn sơ đồ nếu có
+% \includegraphics...

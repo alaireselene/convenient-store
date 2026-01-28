@@ -4,94 +4,94 @@
 \section{Mô tả yêu cầu bài toán}
 
 \subsection{Bối cảnh và Yêu cầu nghiệp vụ tổng thể}
-Thị trường cửa hàng tiện lợi (CVS) hiện đại tại Việt Nam (như Circle K, 7-Eleven) đang hoạt động theo mô hình lai ghép phức tạp giữa \textbf{bán lẻ} và \textbf{dịch vụ ăn uống}. Để vận hành hiệu quả, hệ thống quản lý cần đáp ứng các yêu cầu khắt khe về tốc độ xử lý, kiểm soát thất thoát và tối ưu hóa nhân sự.
+Thị trường cửa hàng tiện lợi (CVS) hiện đại tại Việt Nam (như Circle K, 7-Eleven) đang hoạt động theo mô hình lai ghép phức tạp giữa \textbf{bán lẻ} và \textbf{dịch vụ ăn uống} \cite{scw_7eleven, logistics_7eleven, ipos_circlek}. Để vận hành hiệu quả, hệ thống quản lý cần đáp ứng các yêu cầu khắt khe về tốc độ xử lý, kiểm soát thất thoát và tối ưu hóa nhân sự, tương tự như các quy trình vận hành chuẩn (SOP) được áp dụng trong ngành dịch vụ thực phẩm \cite{umn_sops, michigan_sop}.
 
 Hệ thống cần giải quyết các bài toán trọng yếu sau:
 \begin{itemize}
-  \item \textbf{Tích hợp bán hàng \& chế biến:} Loại bỏ sự rời rạc giữa quầy thu ngân và bếp. Đảm bảo đơn hàng bán ra được chuyển ngay lập tức vào quy trình chế biến thông qua hệ thống in phiếu tự động.
-  \item \textbf{Quản lý kho định lượng:} Kiểm soát nguyên liệu chi tiết đến từng gram/mililit dựa trên công thức (BOM), thay vì chỉ quản lý hàng đóng gói.
-  \item \textbf{Kiểm soát vận hành chặt chẽ:} Quản lý tiền mặt qua từng ca làm việc và quản lý nhân sự (chấm công, xếp lịch) ngay trên cùng một nền tảng.
+ \item \textbf{Tích hợp bán hàng \& chế biến:} Loại bỏ sự rời rạc giữa quầy thu ngân và bếp. Đảm bảo đơn hàng bán ra được chuyển ngay lập tức vào quy trình chế biến thông qua hệ thống in phiếu tự động hoặc hệ thống hiển thị nhà bếp (KDS) \cite{toast_kds, lightspeed_kds, webstaurant_kds}.
+ \item \textbf{Quản lý kho định lượng:} Kiểm soát nguyên liệu chi tiết đến từng gram/mililit dựa trên công thức (BOM), tuân thủ các quy trình bảo quản thực phẩm \cite{dpi_storing_food}, thay vì chỉ quản lý hàng đóng gói.
+ \item \textbf{Kiểm soát vận hành chặt chẽ:} Quản lý tiền mặt qua từng ca làm việc và quản lý nhân sự (chấm công, xếp lịch) ngay trên cùng một nền tảng.
 \end{itemize}
 
 \subsection{Phân rã chức năng hệ thống}
 Dựa trên yêu cầu thực tế và danh sách các ca sử dụng (Use Cases), hệ thống được phân rã thành các phân hệ chính:
 
 \begin{enumerate}
-  \item \textbf{Phân hệ Bán hàng (POS) \& chế biến:}
-    \begin{itemize}
-      \item Xử lý giao dịch nhanh, hỗ trợ đa phương thức thanh toán.
-      \item Xử lý đơn hàng chế biến, combo, và các yêu cầu đặc biệt (tùy chọn đường/đá/topping).
-      \item Tích hợp cơ chế in phiếu chế biến tự động (qua máy in nhiệt) cho quầy bếp/bar.
-      \item Xử lý các nghiệp vụ sau bán hàng: đổi trả, làm lại món, tiêu hủy hàng hỏng trong chế biến.
-    \end{itemize}
+ \item \textbf{Phân hệ Bán hàng (POS) \& chế biến:}
+ \begin{itemize}
+   \item Xử lý giao dịch nhanh, hỗ trợ đa phương thức thanh toán.
+   \item Xử lý đơn hàng chế biến, combo, và các yêu cầu đặc biệt (tùy chọn đường/đá/topping).
+   \item Tích hợp cơ chế in phiếu chế biến tự động (qua máy in nhiệt) cho quầy bếp/bar.
+   \item Xử lý các nghiệp vụ sau bán hàng: đổi trả, làm lại món, tiêu hủy hàng hỏng trong chế biến.
+ \end{itemize}
 
-  \item \textbf{Phân hệ Quản lý kho \& tiêu huỷ:}
-    \begin{itemize}
-      \item Quản lý nhập hàng từ nhà cung cấp, kiểm kê định kỳ.
-      \item Quản lý danh mục hàng hóa (SKU) và công thức chế biến.
-      \item Quản lý tiêu hủy: Xử lý hàng hóa hết hạn, hư hỏng, vỡ trong kho.
-      \item Theo dõi tồn kho thời gian thực, tự động trừ kho nguyên liệu khi bán món ăn.
-    \end{itemize}
+ \item \textbf{Phân hệ Quản lý kho \& tiêu huỷ:}
+ \begin{itemize}
+   \item Quản lý nhập hàng từ nhà cung cấp, kiểm kê định kỳ.
+   \item Quản lý danh mục hàng hóa (SKU) và công thức chế biến.
+        \item Quản lý tiêu hủy: Xử lý hàng hóa hết hạn, hư hỏng, vỡ trong kho theo quy trình tiêu hủy hàng hóa \cite{damviet_tieuhuy}.
+        \item Theo dõi tồn kho thời gian thực, tự động trừ kho nguyên liệu khi bán món ăn.
+        \end{itemize}
 
-  \item \textbf{Phân hệ Quản lý ca \& tiền mặt:}
-    \begin{itemize}
-      \item Quy trình Mở/Đóng ca nghiêm ngặt, đối soát tiền mặt và doanh thu hệ thống.
-      \item Ghi nhận lý do chênh lệch tiền (nếu có) để minh bạch tài chính.
-    \end{itemize}
+ \item \textbf{Phân hệ Quản lý ca \& tiền mặt:}
+ \begin{itemize}
+   \item Quy trình Mở/Đóng ca nghiêm ngặt, đối soát tiền mặt và doanh thu hệ thống.
+   \item Ghi nhận lý do chênh lệch tiền (nếu có) để minh bạch tài chính.
+ \end{itemize}
 
-  \item \textbf{Phân hệ Nhân sự:}
-    \begin{itemize}
-      \item Quản lý hồ sơ nhân viên và phân quyền chi tiết.
-      \item Hỗ trợ chấm công, đăng ký lịch làm việc và xử lý đơn xin nghỉ phép.
-      \item Tính công tự động dựa trên giờ làm thực tế.
-    \end{itemize}
+ \item \textbf{Phân hệ Nhân sự:}
+ \begin{itemize}
+        \item Quản lý hồ sơ nhân viên và phân quyền chi tiết, đáp ứng các yêu cầu tuyển dụng và quản lý nhân sự đặc thù của ngành CVS \cite{tuyendung3s_circlek}.
+        \item Hỗ trợ chấm công, đăng ký lịch làm việc và xử lý đơn xin nghỉ phép.
+        \item Tính công tự động dựa trên giờ làm thực tế.
+        \end{itemize}
 
-  \item \textbf{Phân hệ Báo cáo \& quản trị:}
-    \begin{itemize}
-      \item Cấu hình hệ thống (cửa hàng, khuyến mại, thuế).
-      \item Hệ thống báo cáo đa chiều: doanh thu, hàng bán chạy, hiệu suất nhân viên, lợi nhuận.
-    \end{itemize}
+ \item \textbf{Phân hệ Báo cáo \& quản trị:}
+ \begin{itemize}
+   \item Cấu hình hệ thống (cửa hàng, khuyến mại, thuế).
+   \item Hệ thống báo cáo đa chiều: doanh thu, hàng bán chạy, hiệu suất nhân viên, lợi nhuận.
+ \end{itemize}
 \end{enumerate}
 
 \section{Thông tin nghiệp vụ cơ bản}
 Bảng dưới đây mô tả các luồng nghiệp vụ cốt lõi, tương ứng với các nhóm chức năng trong đặc tả yêu cầu:
 
 \begin{table}[h]
-  \centering
-  \begin{tabular}{|p{3cm}|p{6cm}|p{3.5cm}|p{2.5cm}|}
-    \hline
-    \textbf{Nhóm nghiệp vụ}                                              & \textbf{Quy trình thực hiện} & \textbf{Kết quả}\\
-    \hline
-    \textbf{Bán hàng \& chế biến}                                        &
-    1. Nhân viên nhận order và thanh toán trên POS. \newline
-    2. Máy in nhiệt in phiếu chế biến cho Bếp/Bar. \newline
-    3. Bếp thực hiện món và giao khách. \newline
-    4. Xử lý sự cố: Làm lại món (có thể dẫn đến tiêu hủy).               &
-    - Doanh thu ghi nhận. \newline
-    - Kho nguyên liệu được trừ.                                         \\
-    \hline
-    \textbf{Quản lý kho \& Tiêu huỷ}                                     &
-    1. Tạo phiếu nhập hàng $\to$ Nhà cung cấp giao $\to$ Nhập kho thực tế. \newline
-    2. Định kỳ kiểm kê: So sánh Tồn lý thuyết vs Tồn thực tế $\to$ Cân bằng kho. \newline
-    3. \textbf{Kiểm tra hạn sử dụng/hàng hỏng} $\to$ Lập phiếu tiêu hủy. &
-    - Số lượng tồn kho chính xác. \newline
-    - Ghi nhận chi phí hàng hủy.                                         \\
-    \hline
-    \textbf{Quản lý ca làm}                                              &
-    1. Đầu ca: Đếm tiền quỹ, Mở ca. \newline
-    2. Trong ca: Bán hàng, thu tiền. \newline
-    3. Cuối ca: Đếm tiền két, so sánh với doanh thu máy. \newline
-    4. Kết ca và nộp tiền.                                               &
-    - Tiền mặt được kiểm soát chặt chẽ. \newline
-    - Ngăn chặn gian lận.                                                \\
-    \hline
-    \textbf{Nhân sự}                                                     &
-    1. Nhân viên đăng ký lịch $\to$ Quản lý duyệt. \newline
-    2. Đến giờ làm: Clock-in $\to$ Hết giờ: Clock-out. \newline
-    3. Xin nghỉ phép $\to$ Duyệt/Từ chối.                                &
-    - Dữ liệu chấm công chính xác. \newline
-    - Đảm bảo nhân sự vận hành.                                          \\
-    \hline
+ \centering
+ \begin{tabular}{|p{3cm}|p{6cm}|p{3.5cm}|p{2.5cm}|}
+   \hline
+  \textbf{Nhóm nghiệp vụ}                                              & \textbf{Quy trình thực hiện} & \textbf{Kết quả} \\
+  \hline
+  \textbf{Bán hàng \& chế biến}                                        &
+  1. Nhân viên nhận order và thanh toán trên POS. \newline
+  2. Máy in nhiệt in phiếu chế biến cho Bếp/Bar. \newline
+  3. Bếp thực hiện món và giao khách. \newline
+  4. Xử lý sự cố: Làm lại món (có thể dẫn đến tiêu hủy).               &
+  - Doanh thu ghi nhận. \newline
+  - Kho nguyên liệu được trừ.                                                                                            \\
+  \hline
+  \textbf{Quản lý kho \& Tiêu huỷ}                                     &
+  1. Tạo phiếu nhập hàng $\to$ Nhà cung cấp giao $\to$ Nhập kho thực tế. \newline
+  2. Định kỳ kiểm kê: So sánh Tồn lý thuyết vs Tồn thực tế $\to$ Cân bằng kho. \newline
+  3. \textbf{Kiểm tra hạn sử dụng/hàng hỏng} $\to$ Lập phiếu tiêu hủy. &
+  - Số lượng tồn kho chính xác. \newline
+  - Ghi nhận chi phí hàng hủy.                                                                                           \\
+  \hline
+  \textbf{Quản lý ca làm}                                              &
+  1. Đầu ca: Đếm tiền quỹ, Mở ca. \newline
+  2. Trong ca: Bán hàng, thu tiền. \newline
+  3. Cuối ca: Đếm tiền két, so sánh với doanh thu máy. \newline
+  4. Kết ca và nộp tiền.                                               &
+  - Tiền mặt được kiểm soát chặt chẽ. \newline
+  - Ngăn chặn gian lận.                                                                                                  \\
+  \hline
+  \textbf{Nhân sự}                                                     &
+  1. Nhân viên đăng ký lịch $\to$ Quản lý duyệt. \newline
+  2. Đến giờ làm: Clock-in $\to$ Hết giờ: Clock-out. \newline
+  3. Xin nghỉ phép $\to$ Duyệt/Từ chối.                                &
+  - Dữ liệu chấm công chính xác. \newline
+  - Đảm bảo nhân sự vận hành.                                                                                            \\
+  \hline
   \end{tabular}
   \caption{Bảng thông tin nghiệp vụ cơ bản}
   \label{tab:nghiep_vu}

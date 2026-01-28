@@ -1,0 +1,117 @@
+% !TEX root = ../main.tex
+\chapter{NGUYÊN LÝ THIẾT KẾ}
+
+\section{Giới thiệu về SOLID}
+SOLID là viết tắt của 5 chữ cái đầu trong 5 nguyên lý thiết kế hướng đối tượng, giúp cho lập trình viên viết ra những đoạn code dễ đọc, dễ hiểu, dễ bảo trì và mở rộng. 5 nguyên tắc đó bao gồm:
+\begin{itemize}
+	\item \textbf{S}ingle Responsibility Principle (SRP) - Nguyên lý đơn trách nhiệm.
+	\item \textbf{O}pen/Closed Principle (OCP) - Nguyên lý đóng/mở.
+	\item \textbf{L}iskov Substitution Principle (LSP) - Nguyên lý thay thế Liskov.
+	\item \textbf{I}nterface Segregation Principle (ISP) - Nguyên lý phân tách interface.
+	\item \textbf{D}ependency Inversion Principle (DIP) - Nguyên lý đảo ngược sự phụ thuộc.
+\end{itemize}
+
+\section{Áp dụng SOLID trong dự án CVS}
+
+\subsection{Single Responsibility Principle (SRP)}
+Nguyên lý này phát biểu rằng một class chỉ nên giữ một trách nhiệm duy nhất.
+Trong dự án quản lý Cửa hàng tiện lợi (CVS), nguyên lý này được thể hiện rõ qua kiến trúc MVT của Django và việc phân chia các module nghiệp vụ (Domain-Driven Design):
+\begin{itemize}
+	\item \textbf{Phân chia theo Module:} Hệ thống được chia thành các ứng dụng (app) riêng biệt theo chức năng:
+	      \begin{itemize}
+		      \item \texttt{sales}: Chịu trách nhiệm quản lý đơn hàng (\texttt{Order}), thanh toán và POS.
+		      \item \texttt{inventory}: Chịu trách nhiệm quản lý kho (\texttt{InventoryBatch}, \texttt{StockMovement}), nhập xuất và công thức chế biến.
+		      \item \texttt{hr}: Chịu trách nhiệm quản lý nhân sự (\texttt{Staff}), ca làm việc (\texttt{Shift}) và chấm công.
+	      \end{itemize}
+	\item \textbf{Phân chia theo Layer:}
+	      \begin{itemize}
+		      \item \texttt{Models}: Chỉ định nghĩa cấu trúc dữ liệu và logic liên quan trực tiếp đến bảng (ví dụ: \texttt{Order.calculate\_total()}).
+		      \item \texttt{Views/Serializers}: Xử lý logic validate đầu vào và điều phối luồng dữ liệu, không chứa logic nghiệp vụ phức tạp.
+		      \item \texttt{Services}: Logic nghiệp vụ phức tạp (như tính toán FIFO trừ kho, kiểm tra combo) được tách ra các Service riêng.
+	      \end{itemize}
+\end{itemize}
+
+\subsection{Open/Closed Principle (OCP)}
+Các class nên được thiết kế để dễ dàng mở rộng nhưng hạn chế sửa đổi.
+\begin{itemize}
+	\item \textbf{Ví dụ - Chiến lược giá và Khuyến mãi:} Hệ thống sử dụng \textbf{Strategy Pattern} cho việc tính toán giá và khuyến mãi. Khi cần thêm một loại khuyến mãi mới (ví dụ: "Mua Combo sinh viên"), ta chỉ cần tạo thêm một class/rule mới kế thừa từ \texttt{BaseDiscountRule} mà không cần sửa đổi logic tính tiền cốt lõi của class \texttt{Order}.
+	\item \textbf{Ví dụ - Loại sản phẩm:} Khi cần thêm một loại sản phẩm mới (ví dụ: Dịch vụ nạp thẻ - không có tồn kho vật lý), ta có thể mở rộng từ \texttt{SalesItem} mà không ảnh hưởng đến quy trình bán hàng của các sản phẩm vật lý thông thường.
+\end{itemize}
+
+\subsection{Liskov Substitution Principle (LSP)}
+Các object của class con có thể thay thế object của class cha mà không làm sai lệch tính đúng đắn của chương trình.
+\begin{itemize}
+	\item Trong module kho, các loại phiếu nhập/xuất (\texttt{ReceivingNote}, \texttt{VoidNote}, \texttt{WasteNote}) đều có thể được coi là một \texttt{StockDocument}. Hệ thống xử lý cập nhật tồn kho có thể nhận vào bất kỳ đối tượng nào thuộc loại này để xử lý trừ/cộng kho mà không cần biết chính xác đó là phiếu nhập hay phiếu hủy, miễn là chúng tuân thủ interface cung cấp danh sách \texttt{StockMovements}.
+\end{itemize}
+
+\subsection{Interface Segregation Principle (ISP)}
+Thay vì dùng 1 interface lớn, nên tách thành nhiều interface nhỏ với mục đích cụ thể.
+\begin{itemize}
+	\item \textbf{Phân quyền người dùng:} Interface (API/UI) dành cho Nhân viên bán hàng (Staff) khác biệt hoàn toàn với Interface dành cho Quản lý (Manager).
+	      \begin{itemize}
+		      \item Nhân viên bán hàng chỉ thấy các chức năng POS: \texttt{create\_order}, \texttt{checkout}, \texttt{clock\_in}.
+		      \item Quản lý thấy các chức năng quản trị: \texttt{manage\_recipes}, \texttt{view\_reports}, \texttt{approve\_leave}.
+	      \end{itemize}
+	\item Hệ thống không ép buộc nhân viên bán hàng phải tải hoặc phụ thuộc vào các module báo cáo phức tạp của quản lý.
+\end{itemize}
+
+\subsection{Dependency Inversion Principle (DIP)}
+Các module cấp cao không nên phụ thuộc vào module cấp thấp. Cả hai nên phụ thuộc vào abstraction.
+\begin{itemize}
+	\item \textbf{Sử dụng Service Layer:} Controller (Views) không gọi trực tiếp ORM để thực hiện các tác vụ phức tạp (như Checkout). Thay vào đó, nó gọi đến \texttt{CheckoutService}. Nếu sau này logic checkout thay đổi (ví dụ: thêm bước gửi email hóa đơn), ta chỉ sửa Service mà không ảnh hưởng đến View.
+\end{itemize}
+
+\section{Đặc thù thiết kế với Django và các vi phạm/điều chỉnh}
+
+Dự án ưu tiên sử dụng Django thay cho Java vì tính tiện lợi, dễ cài đặt và triển khai. Do sử dụng Django Framework, một số nguyên tắc OOP thuần túy (như trong Java/C\#) được điều chỉnh để phù hợp với triết lý "The Django Way" và mô hình MVT (Model-View-Template), dẫn đến một số điểm trông có vẻ vi phạm nhưng thực tế là sự đánh đổi có chủ đích.
+
+\subsection{Active Record Pattern và vi phạm SRP thuần túy}
+Trong Django, Pattern chính được sử dụng cho Model là \textbf{Active Record}.
+\begin{itemize}
+	\item \textbf{Hiện tượng:} Class Model (ví dụ \texttt{Order}) chứa cả định nghĩa dữ liệu (fields), logic nghiệp vụ (methods \texttt{is\_paid()}) và logic truy xuất dữ liệu (methods \texttt{save()}, \texttt{delete()}).
+	\item \textbf{Phân tích vi phạm:} Theo SRP thuần túy, Entity chỉ nên chứa dữ liệu. Việc lưu trữ phải thuộc về Repository/DAO.
+	\item \textbf{Lý do chấp nhận:} Việc tách biệt hoàn toàn (tạo DTO, Entity, DAO riêng) trong Python/Django gây ra sự dư thừa code (boilerplate) không cần thiết và làm giảm hiệu năng phát triển. Active Record là core pattern của Django ORM và được chấp nhận rộng rãi để giữ code gọn nhẹ (Simplicity).
+\end{itemize}
+
+\subsection{Sử dụng Facade Pattern trong Phân tích gói}
+Trong quá trình phân tích gói, chúng ta nhận thấy sự phụ thuộc chéo giữa các subsystem. Để giải quyết, \textbf{Facade Pattern} đã được áp dụng thay vì Dependency Injection phức tạp.
+
+\begin{itemize}
+	\item \textbf{Ngữ cảnh:} Hệ thống có các subsystem phức tạp như:
+	      \begin{itemize}
+		      \item \textbf{Inventory Subsystem:} Quản lý lô, Hạn sử dụng, FIFO, Backflushing (trừ nguyên liệu món chế biến).
+		      \item \textbf{Sales Subsystem:} Quản lý Bán hàng, POS.
+	      \end{itemize}
+
+	\item \textbf{Vấn đề:} Khi một đơn hàng được thanh toán, Sales Subsystem cần báo cho Inventory Subsystem để trừ kho. Nếu Sales gọi trực tiếp các class chi tiết như \texttt{InventoryBatch} hay \texttt{RecipeEngine}, nó sẽ bị phụ thuộc chặt chẽ vào cấu trúc nội tại của kho.
+
+	\item \textbf{Giải pháp (Facade):}
+	      \begin{itemize}
+		      \item Tạo một Facade Interface (ví dụ: \texttt{InventoryService}) cung cấp phương thức đơn giản: \texttt{deduct\_stock\_for\_order(order\_id)}.
+		      \item Subsystem Bán hàng chỉ cần gọi hàm này mà không cần biết bên trong Kho đang sử dụng thuật toán FIFO như thế nào, hay món ăn đó có bao nhiêu nguyên liệu.
+		      \item Facade này đóng vai trò "cổng giao tiếp", che giấu sự phức tạp của việc Backflushing và quản lý Lô.
+	      \end{itemize}
+
+	\item \textbf{Tại sao không dùng Dependency Injection (DI) thuần túy?} Django Views được khởi tạo bởi Framework (URL Router), việc inject dependencies vào constructor của View khá cồng kềnh. Sử dụng Facade (thông qua import module services) là cách tiếp cận thuần tuý Python, đơn giản và hiệu quả hơn trong ngữ cảnh này.
+\end{itemize}
+
+\section{Xử lý các yêu cầu thay đổi}
+
+Hệ thống được thiết kế để linh hoạt trước các yêu cầu thay đổi phổ biến trong bán lẻ:
+
+\subsection{Thêm hình thức thanh toán mới (VD: Ví điện tử mới)}
+\begin{itemize}
+	\item \textbf{Thiết kế:} Module Thanh toán được thiết kế độc lập. Các phương thức thanh toán (Cash, QR, Card) đều được cấu hình trong bảng \texttt{payment\_method\_configs}.
+	\item \textbf{Thay đổi:} Chỉ cần thêm cấu hình mới hoặc implement thêm một Adapter thanh toán nếu cần tích hợp API bên thứ 3, không cần sửa đổi quy trình Checkout chính.
+\end{itemize}
+
+\subsection{Thay đổi công thức chế biến (Recipe)}
+\begin{itemize}
+	\item \textbf{Thiết kế:} Công thức (\texttt{Recipe}) và Nguyên liệu (\texttt{RecipeItem}) được tách biệt với Sản phẩm bán (\texttt{SalesItem}).
+	\item \textbf{Thay đổi:} Quản lý có thể cập nhật định lượng nguyên liệu trong Admin Dashboard. Hệ thống Backflushing sẽ tự động áp dụng công thức mới cho các đơn hàng sau đó mà không cần deploy lại code (Data-driven logic).
+\end{itemize}
+
+\subsection{Thêm báo cáo thống kê mới}
+\begin{itemize}
+	\item Vì dữ liệu giao dịch (\texttt{Order}, \texttt{StockMovement}) được lưu trữ chi tiết và chuẩn hóa (3NF), việc thêm báo cáo chỉ là viết thêm câu truy vấn (Query) hoặc View mới để tổng hợp dữ liệu, không ảnh hưởng đến luồng ghi dữ liệu.
+\end{itemize}

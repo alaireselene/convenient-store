@@ -1,0 +1,38 @@
+% !TEX root = ../main.tex
+\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+
+\section{Kết luận}
+
+Sau thời gian nghiên cứu và thực hiện đồ án, nhóm chúng em đã hoàn thành các mục tiêu đề ra ban đầu về việc phân tích và thiết kế một hệ thống quản lý cửa hàng tiện lợi (CVS) hiện đại, đáp ứng được đặc thù lai ghép giữa bán lẻ và dịch vụ ăn uống.
+
+Các kết quả đạt được bao gồm:
+\begin{itemize}
+	\item \textbf{Khảo sát và nắm bắt nghiệp vụ:} Hiểu rõ quy trình vận hành thực tế của các chuỗi CVS như Circle K, GS25, đặc biệt là sự phức tạp trong việc quản lý chế biến thực phẩm và định lượng tồn kho nguyên liệu.
+	\item \textbf{Đặc tả yêu cầu chi tiết:} Xây dựng bộ tài liệu đặc tả đầy đủ cho các phân hệ cốt lõi, bao gồm Bán hàng (POS), Chế biến, Quản lý kho, và Quản lý ca làm việc.
+	\item \textbf{Thiết kế hệ thống:} Đề xuất kiến trúc phần mềm và thiết kế chi tiết cơ sở dữ liệu, giao diện người dùng (UI) tối ưu cho thao tác cảm ứng trên máy POS, đảm bảo tính thuận tiện cho nhân viên thu ngân và nhân viên bếp.
+\end{itemize}
+
+Tuy nhiên, do giới hạn về thời gian và nguồn lực, nhóm đã quyết định tập trung tối đa vào các \textbf{nghiệp vụ vận hành cốt lõi} để đảm bảo luồng hoạt động chính của cửa hàng được thông suốt. Vì vậy, các nhóm chức năng thiên về quản trị như quản lý nhân sự chuyên sâu, cấu hình hệ thống phức tạp hay các báo cáo quản trị cao cấp mới chỉ dừng lại ở mức độ phân tích sơ bộ mà chưa được đi sâu chi tiết hoặc triển khai.
+
+Đặc biệt, đồ án hiện tại mới dừng lại ở bước \textbf{phân tích và thiết kế}, chưa tiến hành giai đoạn \textbf{thiết kế chương trình và cài đặt}. Đây là tiền đề vững chắc để nhóm có thể tiếp tục phát triển sản phẩm thực tế trong tương lai.
+
+\section{Hướng phát triển}
+
+Dựa trên nền tảng phân tích và thiết kế đã có, nhóm đề xuất các hướng phát triển tiếp theo cho dự án:
+
+\subsection{Kế hoạch ngắn hạn}
+\begin{itemize}
+	\item \textbf{Triển khai xây dựng phần mềm:} Tiến hành lập trình Front-end và Back-end dựa trên bản thiết kế đã hoàn thiện. Ưu tiên phát triển phân hệ POS và Bếp trước để kiểm thử quy trình in phiếu tự động.
+	\item \textbf{Hoàn thiện phân hệ Quản trị:} Phát triển các chức năng quản lý đã bị lược bỏ trong giai đoạn 1 như: Quản lý chi tiết hồ sơ nhân viên, Phân quyền động, Cấu hình khuyến mãi phức tạp và Hệ thống báo cáo thông minh (Business Intelligence).
+	\item \textbf{Kiểm thử thực tế:} Triển khai thử nghiệm tại một mô hình giả lập để đánh giá hiệu năng hệ thống và trải nghiệm người dùng.
+\end{itemize}
+
+\subsection{Kế hoạch dài hạn}
+\begin{itemize}
+	\item \textbf{Mở rộng mô hình chuỗi:} Nâng cấp kiến trúc để hỗ trợ quản lý đa chi nhánh, đồng bộ dữ liệu tập trung và điều chuyển hàng hóa giữa các kho.
+	\item \textbf{Ứng dụng khách hàng thân thiết:} Xây dựng ứng dụng di động cho khách hàng để tích điểm, đổi quà và đặt món trước khi đến cửa hàng.
+	\item \textbf{Tích hợp thanh toán đa kênh:} Kết nối sâu với các ví điện tử (Momo, ZaloPay) và cổng thanh toán ngân hàng (QR Code động) để tối ưu quy trình thanh toán.
+	\item \textbf{Ứng dụng trí tuệ nhân tạo:} Sử dụng dữ liệu lịch sử bán hàng để dự báo nhu cầu nhập hàng, gợi ý menu combo tối ưu doanh thu và phát hiện gian lận trong quản lý kho.
+\end{itemize}
+
+Nhóm chúng em tin rằng với hướng tiếp cận bài bản từ khâu phân tích thiết kế, Hệ thống Quản lý CVS hoàn toàn có tiềm năng phát triển thành một giải pháp phần mềm hoàn chỉnh, giải quyết hiệu quả bài toán vận hành cho các cửa hàng tiện lợi tại Việt Nam.

@@ -1,3 +1,4 @@
+\raggedbottom
 % !TEX root = ../main.tex
 \chapter{ĐẶC TẢ YÊU CẦU}
 
@@ -31,9 +32,7 @@ Hệ thống Cửa hàng tiện lợi (CVS) bao gồm các tác nhân sau đây:
 	\hline
 	AC02        & Quản lý               & Là nhân viên có quyền hạn cao hơn, có thể thực hiện các chức năng quản trị như quản lý nhân viên, cấu hình hệ thống, xem báo cáo thống kê và quản lý danh mục sản phẩm. \\
 	\hline
-	AC03        & Khách hàng            & Người mua hàng tại cửa hàng, tương tác với hệ thống thông qua quá trình thanh toán và nhận hóa đơn.                                                                     \\                                                                            \\
-	\hline
-	AC04        & Máy in nhiệt          & Thiết bị phần cứng dùng để in hóa đơn bán hàng và phiếu chế biến thực phẩm.                                                                                             \\
+ AC03        & Hệ thống thanh toán            & Hệ thống xử lý các giao dịch thanh toán, kết nối với các phương thức thanh toán điện tử và in hóa đơn.                                                                     \\
 	\hline
 	AC05        & Nhà cung cấp          & Đối tác bên ngoài cung cấp hàng hóa cho cửa hàng, tham gia vào quy trình nhập hàng.                                                                                     \\
 	\hline
@@ -134,7 +133,6 @@ Các ca sử dụng trong hệ thống có các mối quan hệ sau:
 \end{longtable}
 
 \vfill
-
 \subsection{Biểu đồ ca sử dụng tổng quan}
 
 \begin{figure}[H]
@@ -239,7 +237,7 @@ Nhân viên đã đăng nhập hệ thống. Ca làm việc trước đó đã �
 	\item \textbf{Nhân viên}: Chọn chức năng "Kết ca" (Close Shift) khi hết giờ làm.
 	\item \textbf{Hệ thống}: Hiển thị bảng tổng kết doanh thu dự kiến (tiền mặt, thẻ, chuyển khoản) dựa trên các đơn hàng đã bán.
 	\item \textbf{Nhân viên}: Đếm tiền thực tế trong két và nhập vào hệ thống.
-	\item \textbf{Hệ thống}: So sánh tiền thực tế và tiền dự kiến (System expected). Hiển thị chênh lệch (thừa/thiếu) nếu có.
+ \item \textbf{Hệ thống}: So sánh tiền thực tế và tiền dự kiến. Hiển thị chênh lệch (thừa/thiếu) nếu có.
 	\item \textbf{Nhân viên}: Nhập lý do chênh lệch (nếu có) và xác nhận kết ca.
 	\item \textbf{Hệ thống}: Lưu báo cáo ca làm việc.
 \end{enumerate}
@@ -403,6 +401,7 @@ Nhân viên có tài khoản hợp lệ trong hệ thống.
 \end{enumerate}
 
 \vspace{0.5em}
+
 \noindent \textbf{Luồng sự kiện thay thế:}
 \begin{description}
 	\item[3a.] \textbf{Quên clock-in:} Nhân viên quên chấm công đầu ca. Nhân viên báo Quản lý để điều chỉnh thủ công trong UC19 - Tính công.
@@ -411,7 +410,6 @@ Nhân viên có tài khoản hợp lệ trong hệ thống.
 \vspace{0.5em}
 \noindent \textbf{Hậu điều kiện:} \\
 Thời gian làm việc của nhân viên được ghi nhận để tính công.
-
 \subsection{Đặc tả ca sử dụng Xin nghỉ}
 
 \textbf{Ca sử dụng:} UC20 - Xin nghỉ \\
@@ -421,7 +419,8 @@ Nhân viên đã đăng nhập hệ thống.
 \vspace{0.5em}
 \noindent \textbf{Luồng sự kiện chính:}
 \begin{enumerate}
-	\item \textbf{Nhân viên}: Chọn chức năng "Xin nghỉ" từ menu.
+ \item \textbf{Nhân viên}: Chọn chức năng "Lịch làm việc" từ menu.
+	\item \textbf{Nhân viên}: Chọn chức năng "Xin nghỉ".
 	\item \textbf{Hệ thống}: Hiển thị form xin nghỉ với các trường: ngày nghỉ, loại nghỉ (phép, ốm, việc riêng), lý do.
 	\item \textbf{Nhân viên}: Điền thông tin và gửi yêu cầu.
 	\item \textbf{Hệ thống}: Lưu yêu cầu với trạng thái "Chờ duyệt", thông báo đến Quản lý.
@@ -449,9 +448,11 @@ Nhân viên đã đăng nhập hệ thống. Quản lý đã tạo các ca làm 
 \vspace{0.5em}
 \noindent \textbf{Luồng sự kiện chính:}
 \begin{enumerate}
-	\item \textbf{Nhân viên}: Chọn chức năng "Đăng ký lịch làm việc" từ menu.
+ \item \textbf{Nhân viên}: Chọn chức năng "Lịch làm việc" từ menu.
+	\item \textbf{Hệ thống}: Hiển thị lịch làm việc tuần/tháng.
+	\item \textbf{Nhân viên}: Chọn chức năng "Đăng kí ca làm".
 	\item \textbf{Hệ thống}: Hiển thị lịch tuần/tháng với các ca làm việc khả dụng.
-	\item \textbf{Nhân viên}: Chọn các ca muốn đăng ký.
+ \item \textbf{Nhân viên}: Chọn ngày làm, giờ làm muốn đăng kí.
 	\item \textbf{Hệ thống}: Kiểm tra xung đột (đã đăng ký ca khác, vượt giờ làm tối đa, ...).
 	\item \textbf{Hệ thống}: Hiển thị xác nhận đăng ký thành công.
 	\item \textbf{Hệ thống}: Cập nhật lịch làm việc của nhân viên.
@@ -468,59 +469,61 @@ Nhân viên đã đăng nhập hệ thống. Quản lý đã tạo các ca làm 
 \noindent \textbf{Hậu điều kiện:} \\
 Nhân viên được ghi nhận vào ca làm việc đã chọn. Lịch làm việc được cập nhật.
 
+\vfil
+
 \section{Quy trình nghiệp vụ}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC01_DangNhap.png}
   \caption{Quy trình Đăng nhập}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC04_BanHang.png}
   \caption{Quy trình Bán hàng}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC08_NhapHang.png}
   \caption{Quy trình Nhập hàng}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC10_QuanLyCaLamViec.png}
   \caption{Quy trình Quản lý ca làm việc}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC05_CheBienThucPham.png}
   \caption{Quy trình Chế biến thực phẩm}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC06_LamLaiDonHang.png}
   \caption{Quy trình Làm lại đơn hàng}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC07_TieuHuy.png}
   \caption{Quy trình Tiêu huỷ}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC09_KiemKeTonKho.png}
   \caption{Quy trình Kiểm kê tồn kho}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC18_ChamCong.png}
   \caption{Quy trình Chấm công}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC20_XinNghi.png}
   \caption{Quy trình Xin nghỉ}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \includegraphics[width=\textwidth]{assets/diagram_operation/UC21_DangKyLichLamViec.png}
   \caption{Quy trình Đăng ký lịch làm việc}
 \end{figure}
